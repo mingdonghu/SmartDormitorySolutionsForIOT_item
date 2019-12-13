@@ -1,0 +1,64 @@
+一、项目名称：基于物联网云平台的智慧宿舍管理系统
+Smart dormitory solutions for IOT
+
+二、项目总体功能需求分析：		“421”   
+
+【1】大功率用电器监测
+
+单相电能计量模块：
+https://item.taobao.com/item.htm?id=571482121655&ali_refid=a3_430582_1006:1151002142:N:U8BXSISOWiVTtifikgVTr3ZVTVsw6dIi:e60f70fa0bda9b6bd5a8387b5ed34264&ali_trackid=1_e60f70fa0bda9b6bd5a8387b5ed34264&spm=a230r.1.14.6#detail
+
+https://item.taobao.com/item.htm?id=571489221834&ali_refid=a3_430582_1006:1151002142:N:U8BXSISOWiVTtifikgVTr3ZVTVsw6dIi:93bf7c095aad373144de1e53334c08c3&ali_trackid=1_93bf7c095aad373144de1e53334c08c3&spm=a230r.1.14.1#detail
+
+【2】火灾监测
+MQ-2烟雾传感器模块;
+MQ-7 / MQ-9 一氧化碳传感器模块;
+
+【3】夜晚就寝熄灯监测	--熄灯控制
+
+【4】指纹开锁与人员统计
+
+【5】闹钟 
+语音模块/蜂鸣器
+
+【5】LCD - GUI
+
+三、项目技术架构分析： 【三层式】
+|APP|
+   ↑↓
+|机智云|
+   ↑↓
+|物理终端设备|-- 放置在各宿舍
+
+--------------------------------------
+架构详解：
+--------------------------------------
+|APP|
+↑↓	--- TCP/IP
+|机智云平台|
+↑↓  --- TCP/IP
+|WLAN/路由器(网关)|
+↑↓  --- WIFI
+|ESP8266|
+↑↓  --- UART
+|物理终端设备|  ---  MCU最小系统 + 各类传感器、通讯、执行器模块
+
+--------------------------------------
+
+四、各层功能需求分析
+【1】APP
+
+【2】机智云平台
+简介：机智云服务器通过串口转WiFi模块ESP8266(机智云WiFi模块)与物理终端设备相连
+https://blog.csdn.net/tichimi3375/article/details/80292336
+
+【3】物理终端设备
+简介：基于STM32最小系统的下位机，即STM32最小系统 + 机智云WiFi模块 + 传感器模块
+
+0-蜂鸣器模块  -- 火灾报警
+1-
+
+
+
+
+

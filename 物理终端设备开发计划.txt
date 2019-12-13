@@ -1,0 +1,49 @@
+0-依据业务需求，确定物理终端设备的开发方案
+
+	0-硬件选型与成本最低控制
+	
+		0-MCU最小系统板处理芯片型号确定：
+			STM32F103ZET6 MCU芯片
+		
+		1-MCU最小系统板外设模块确定：
+			0-单相电能计量模块					---  UART		需要买   --- STM32 USART
+https://item.taobao.com/item.htm?id=571482121655&ali_refid=a3_430582_1006:1151002142:N:U8BXSISOWiVTtifikgVTr3ZVTVsw6dIi:e60f70fa0bda9b6bd5a8387b5ed34264&ali_trackid=1_e60f70fa0bda9b6bd5a8387b5ed34264&spm=a230r.1.14.6#detail
+
+https://item.taobao.com/item.htm?id=571489221834&ali_refid=a3_430582_1006:1151002142:N:U8BXSISOWiVTtifikgVTr3ZVTVsw6dIi:93bf7c095aad373144de1e53334c08c3&ali_trackid=1_93bf7c095aad373144de1e53334c08c3&spm=a230r.1.14.1#detail
+			
+			1-	MQ-2烟雾传感器模块;				--- ADC/GPIO[普通或中断]
+			
+			https://detail.tmall.com/item.htm?spm=a230r.1.14.20.eee95aa0EYQTVR&id=41265308241&ns=1&abbucket=5&skuId=4100651795251
+				
+			2- 串口转WIFI模块
+			正点原子ATK-ESP8266-VL3模块		   --- UART    基地有		--- STM32 USART
+			
+			3-语音模块/蜂鸣器
+				语音模块待确定 --  参考 arduino智能小车所使用的
+				
+				蜂鸣器 精英板中有
+		
+	
+		
+	1-嵌入式软件开发方案
+	
+		0-Git版本控制工具---Gitee(码云)上创建公有仓库(存储库)，存储文件，记录进展
+		
+		1-MCU软件开发工具
+			0- 方案一、   正点原子STM32F103ZET6精英开发板 + STM32F1标准库 + keil5 MDK IDE软件 
+			
+			1- 方案二、    STM32F103ZET6最小系统板 + STM32F1HAL库 + STM32CubeMX软件 + keil5 MDK IDE软件
+							或
+						  STM32F103ZET6最小系统板 + STM32F1标准库 + keil5 MDK IDE软件 
+						  
+			0 or 1 选加 source insight 代码编辑软件
+			
+			前期选择方案一，验证框架以及实现大体功能！
+	
+		2-设计外设驱动程序
+		
+		基础： APP 通过连接机智云控制物理终端设备等的亮灭
+	
+		3-确定与应用层之间的通讯协议，设计业务应用程序	
+		
+		
