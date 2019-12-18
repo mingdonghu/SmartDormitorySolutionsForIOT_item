@@ -17,10 +17,19 @@
 #include <string.h>
 #include "gizwits_product.h"
 
+
+#include "usart3.h"		//添加与修改
+#include "led.h"
+
 static uint32_t timerMsCount;
 
 /** Current datapoint */
+
 dataPoint_t currentDataPoint;
+
+//extern dataPoint_t currentDataPoint;	//添加与修改
+//extern u8 wifi_sta;
+
 
 /**@} */
 /**@name Gizwits User Interface
@@ -70,10 +79,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         if(0x01 == currentDataPoint.valueLED)
         {
           //user handle
+          LED0 = 0; //LED0 亮
         }
         else
         {
-          //user handle    
+          //user handle
+          LED0 = 1; //LED0 灭
         }
         break;
 
@@ -92,10 +103,10 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
       case WIFI_DISCON_ROUTER:
  
         break;
-      case WIFI_CON_M2M:
+      case WIFI_CON_M2M: //wifi_sta=1;//wifi设备已连接//第二处，添加
  
         break;
-      case WIFI_DISCON_M2M:
+      case WIFI_DISCON_M2M:	//wifi_sta=0;//wifi设备断开//第三处，添加
         break;
       case WIFI_RSSI:
         GIZWITS_LOG("RSSI %d\n", wifiData->rssi);
@@ -134,6 +145,8 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 * @param none
 * @return none
 */
+
+
 void userHandle(void)
 {
  /*
@@ -198,7 +211,9 @@ uint32_t gizGetTimerCount(void)
 */
 void mcuRestart(void)
 {
-
+	//第四处，添加
+	__set_FAULTMASK(1);//关闭所有中断
+    NVIC_SystemReset();//复位
 }
 /**@} */
 
@@ -266,10 +281,17 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
     {
         //USART_SendData(UART, buf[i]);//STM32 test demo
         //Serial port to achieve the function, the buf[i] sent to the module
+        		//第五处，添加
+		USART_SendData(USART3,buf[i]);
+        while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕
+        
         if(i >=2 && buf[i] == 0xFF)
         {
           //Serial port to achieve the function, the 0x55 sent to the module
           //USART_SendData(UART, 0x55);//STM32 test demo
+          		  //第六处，添加
+		  USART_SendData(USART3,0x55);
+          while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕 
         }
     }
 
