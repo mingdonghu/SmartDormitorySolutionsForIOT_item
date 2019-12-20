@@ -38,7 +38,8 @@ typedef void (*gizTimerFunc_t)(void *arg );
 * @{
 */
 #define GIZWITS_LOG printf                          ///<Run log print
-//#define PROTOCOL_DEBUG                              ///<Protocol data print
+
+#define PROTOCOL_DEBUG                              ///<Protocol data print
 
 #ifndef GIZWITS_LOG_NOFORMAT
 #define GIZWITS_LOG_NOFORMAT printf

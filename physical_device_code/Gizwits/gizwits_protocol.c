@@ -940,7 +940,7 @@ void gizwitsInit(void)
     pRb.rbBuff = rbBuf;
     if(0 == rbCreate(&pRb))
 	{
-		GIZWITS_LOG("rbCreate Success \n");
+		GIZWITS_LOG("\r\n rbCreate Success \r\n");
 	}
 	else
 	{
@@ -978,7 +978,6 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
-
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t));   
             break;
         case WIFI_SOFTAP_MODE:
@@ -1020,7 +1019,6 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
-
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t));
             break;
         case WIFI_NINABLE_MODE:
@@ -1048,7 +1046,6 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
-
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t)); 
             break;
         default:
@@ -1175,8 +1172,10 @@ int32_t gizwitsHandle(dataPoint_t *currentData)
     /*resend strategy*/
     gizProtocolAckHandle();
     ret = gizProtocolGetOnePacket(&pRb, gizwitsProtocol.protocolBuf, &protocolLen);
-
-    if(0 == ret)
+		
+		//GIZWITS_LOG("gizwitsHandle-ret = %d\r\n", ret);
+    
+	if(0 == ret)
     {
         GIZWITS_LOG("Get One Packet!\n");
         

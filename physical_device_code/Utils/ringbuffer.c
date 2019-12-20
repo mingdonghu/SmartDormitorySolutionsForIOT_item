@@ -61,6 +61,7 @@ int32_t ICACHE_FLASH_ATTR rbCanRead(rb_t *rb)
 
     if (rb->rbHead == rb->rbTail)
     {
+			//GIZWITS_LOG("\r\n	rb->rbHead == rb->rbTail \r\n");
         return 0;
     }
 

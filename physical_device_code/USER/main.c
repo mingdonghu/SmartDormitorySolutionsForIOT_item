@@ -8,8 +8,12 @@
 #include "usart3.h"
 #include "gizwits_product.h" 
 
+//function statement
+void UART_test(void);
+
+
 /* 用户区当前设备状态结构体*/
-//dataPoint_t currentDataPoint;	//在gizwits_product.c中已定义
+dataPoint_t currentDataPoint;	//在gizwits_product.c中已定义
  
 //WIFI连接状态
 //wifi_sta 0: 断开
@@ -26,6 +30,56 @@ void Gizwits_Init(void)
 	gizwitsInit();//缓冲区初始化
 }
 
+
+//主函数
+int main(void)
+{		
+ 	int key;
+	int32_t ret = 0;
+	
+	delay_init();	    	 //延时函数初始化	  
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
+	uart_init(115200);	 //串口初始化为115200
+ 	LED_Init();			     //LED端口初始化
+	KEY_Init();          //初始化与按键连接的硬件接口
+	Gizwits_Init();         //协议初始化
+	
+	printf("\r\n--------机智云IOT-LED接入实验----------\r\n");
+	printf("KEY1:AirLink连接模式\t KEY0:SoftAP连接模式\t KEY_UP:复位\r\n\r\n");	 
+ 	
+//轮询
+while(1)
+{
+	userHandle();//用户采集
+	
+	gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
+	
+	key = KEY_Scan(0);
+	
+	if(key == KEY1_PRES){//KEY1 按键
+		printf("WIFI 进入 AirLink 连接模式\r\n");
+		ret = gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link 模式接入
+		printf("ret = %d Bytes\r\n", ret);
+		printf("IS OK\r\n");
+	}else if(key == KEY0_PRES){// KEY0 按键
+		printf("WIFI 进入SoftAP 连接模式\r\n");
+		ret = gizwitsSetMode(WIFI_SOFTAP_MODE);
+		printf("ret = %d Bytes\r\n", ret);
+		printf("IS OK\r\n");
+	}else if(key == WKUP_PRES){//KEY_UP 按键
+		printf("WIFI 复位，请重新配置连接\r\n");
+		ret = gizwitsSetMode(WIFI_RESET_MODE);//WIFI 复位
+		printf("ret = %d Bytes\r\n", ret);
+		printf("IS OK\r\n");
+	}
+	delay_ms(200);
+	LED1=!LED1;
+
+
+
+}	
+	
+}
 
 
 void UART_test(void)
@@ -50,51 +104,4 @@ void UART_test(void)
 	}
 }
 
-
-int main(void)
-{		
- 	int key;
-	//u8 wifi_con=0;//记录wifi连接状态 1:连接 0:断开
-	delay_init();	    	 //延时函数初始化	  
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
-	uart_init(115200);	 //串口初始化为115200
- 	LED_Init();			     //LED端口初始化
-	KEY_Init();          //初始化与按键连接的硬件接口
-
-	Gizwits_Init();         //协议初始化
-	printf("--------机智云IOT-LED接入实验----------\r\n");
-	printf("KEY1:AirLink连接模式\t KEY_UP:复位\r\n\r\n");	 
- 	
-//轮询
-while(1)
-{
-	userHandle();//用户采集
-	gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
-	key = KEY_Scan(0);
-	if(key==KEY1_PRES)//KEY1 按键
-	{
-		printf("WIFI 进入 AirLink 连接模式\r\n");
-		gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link 模式接入
-	}
-	if(key==WKUP_PRES)//KEY_UP 按键
-	{
-		printf("WIFI 复位，请重新配置连接\r\n");
-		gizwitsSetMode(WIFI_RESET_MODE);//WIFI 复位
-	}
-	delay_ms(200);
-	LED1=!LED1;
-
-
-#if 0
-	//UART_test();
-	LED0 = !LED0;
-	delay_ms(300);
-	LED1 = !LED1;
-	delay_ms(300);
-#endif
-		
-
-}	
-	
-}
 

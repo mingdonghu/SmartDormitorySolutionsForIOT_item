@@ -67,7 +67,7 @@ extern "C" {
 /**@} */
 
 
-
+//#define MAX_PACKAGE_LEN    950                ///< 数据缓冲区最大长度
 #define MAX_PACKAGE_LEN    (sizeof(devStatus_t)+sizeof(attrFlags_t)+20)                 ///< Data buffer maximum length
 #define RB_MAX_LEN          (MAX_PACKAGE_LEN*2)     ///< Maximum length of ring buffer
 
