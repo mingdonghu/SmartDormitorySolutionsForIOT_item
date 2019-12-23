@@ -18,15 +18,7 @@
 void USART3_IRQHandler(void)
 {
 	UART_IRQ_FUN();
-#if 0
-	u8 res;	      
-	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)//接收到数据
-	{	 
-		res =USART_ReceiveData(USART3);		 
-		gizPutData(&res, 1);//数据写入到缓冲区
-		printf("\r\n usart3 is ok ! \r\n");
-	}
-#endif
+
 }   
 
 //初始化IO 串口3

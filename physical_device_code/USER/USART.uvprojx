@@ -347,7 +347,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>0</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\TIMER;..\HARDWARE\USART3;..\Gizwits;..\Utils</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\TIMER;..\HARDWARE\USART3;..\Gizwits;..\Utils;..\HARDWARE\LCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -448,6 +448,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\USART3\usart3.c</FilePath>
             </File>
+            <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -512,6 +517,11 @@
               <FileName>stm32f10x_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32F10x_FWLib\src\stm32f10x_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_fsmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STM32F10x_FWLib\src\stm32f10x_fsmc.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -21,7 +21,7 @@
 //这里使用的是定时器3!
 void TIM3_Int_Init(u16 arr,u16 psc)
 {
-    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); //时钟使能
@@ -49,13 +49,7 @@ void TIM3_Int_Init(u16 arr,u16 psc)
 void TIM3_IRQHandler(void)   //TIM3中断
 {
 	TIMER_IRQ_FUN();
-#if 0
-	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
-	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
-		gizTimerMs();
-	}
-#endif
+	
 }
 
 

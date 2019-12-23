@@ -39,3 +39,5 @@
 ..\obj\gizwits_product.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\gizwits_product.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\gizwits_product.o: ..\HARDWARE\LED\led.h
+..\obj\gizwits_product.o: ..\HARDWARE\KEY\key.h
+..\obj\gizwits_product.o: ..\HARDWARE\LCD\lcd.h

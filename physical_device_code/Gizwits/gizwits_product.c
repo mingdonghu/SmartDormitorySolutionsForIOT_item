@@ -16,20 +16,21 @@
 #include <stdio.h>
 #include <string.h>
 #include "gizwits_product.h"
-
+#include "common.h"
 
 #include "usart3.h"		//添加与修改
 #include "led.h"
+#include "key.h"
+#include "lcd.h"
+
 
 static uint32_t timerMsCount;
 
 /** Current datapoint */
 
-//dataPoint_t currentDataPoint;
+dataPoint_t currentDataPoint;
 
-
-//extern u8 wifi_sta;
-
+uint8_t RxWifiBuffer = 0;
 
 /**@} */
 /**@name Gizwits User Interface
@@ -103,10 +104,11 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
       case WIFI_DISCON_ROUTER:
  
         break;
-      case WIFI_CON_M2M: //wifi_sta=1;//wifi设备已连接//第二处，添加
- 
+      case WIFI_CON_M2M: 
+			GIZWITS_LOG("\r\n wifi device is connect! \r\n");
         break;
-      case WIFI_DISCON_M2M:	//wifi_sta=0;//wifi设备断开//第三处，添加
+      case WIFI_DISCON_M2M:	
+	  	GIZWITS_LOG("\r\n wifi device is disconnect! \r\n");
         break;
       case WIFI_RSSI:
         GIZWITS_LOG("RSSI %d\n", wifiData->rssi);
@@ -149,11 +151,8 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 
 void userHandle(void)
 {
- 	if(LED0 == 0){
-		currentDataPoint.valueLED = 1;
-	}else{
-		currentDataPoint.valueLED = 0;
-	}
+
+	
 }
 
 /**
@@ -212,9 +211,8 @@ uint32_t gizGetTimerCount(void)
 */
 void mcuRestart(void)
 {
-	printf("\r\n mcuRestart ! \r\n");
 	__set_FAULTMASK(1);//关闭所有中断
-    NVIC_SystemReset();//复位
+  NVIC_SystemReset();//复位
 }
 /**@} */
 
@@ -228,13 +226,51 @@ void mcuRestart(void)
 */
 void TIMER_IRQ_FUN(void)
 {
+	int key = 0;
+	
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)	//检查TIM3更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
+		
+		key = KEY_Scan(0);
+			if(key == KEY1_PRES)
+			{//KEY1 按键
+				gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link 模式接入
+				LCD_Clear(WHITE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is ok in Airlink");
+			}
+			else if(key == KEY0_PRES)
+			{// KEY0 按键
+				gizwitsSetMode(WIFI_SOFTAP_MODE);
+				LCD_Clear(WHITE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is ok in SoftAP");
+			}
+			else if(key == WKUP_PRES)
+			{//KEY_UP 按键
+				gizwitsSetMode(WIFI_RESET_MODE);//WIFI 复位
+				LCD_Clear(WHITE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is ok in RESET");
+			}
+		
 		gizTimerMs();
+	
 	}
 
-  //gizTimerMs();
 }
 
 /**
@@ -249,18 +285,22 @@ void TIMER_IRQ_FUN(void)
 */
 void UART_IRQ_FUN(void)
 {
-  uint8_t value = 0;
+  
   //value = USART_ReceiveData(USART2);//STM32 test demo
   
-#if 1
+
   if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)//接收到数据
 	{	
 		USART_ClearITPendingBit(USART3,USART_IT_RXNE);
-		value =USART_ReceiveData(USART3);		 
-		gizPutData(&value, 1);//数据写入到缓冲区
-		printf("\r\n usart3_RX_IT is ok ! \r\n");
+		
+		RxWifiBuffer =USART_ReceiveData(USART3);
+		
+		gizPutData((uint8_t *)&RxWifiBuffer, 1);//数据写入到缓冲区
+		
+		//GIZWITS_LOG("\r\n usart3_RX_IT is ok ! \r\n");
 	}
-#endif
+	
+
 
   //gizPutData(&value, 1);
 }
@@ -286,22 +326,13 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
         return -1;
     }
     
-    #ifdef PROTOCOL_DEBUG
-    GIZWITS_LOG("\r\n MCU2WiFi[%4d:%4d]: ", gizGetTimerCount(), len);
-    for(i=0; i<len; i++)
-    {
-        GIZWITS_LOG("%02x ", buf[i]);
-    }
-    GIZWITS_LOG("\r\n");
-    #endif
-
     for(i=0; i<len; i++)
     {
         //USART_SendData(UART, buf[i]);//STM32 test demo
         //Serial port to achieve the function, the buf[i] sent to the module
         
-		 USART_SendData(USART3,buf[i]);
-	     while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕
+			USART_SendData(USART3,buf[i]);
+	    while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕
 	        
 			if(i >=2 && buf[i] == 0xFF)
 			{
@@ -313,6 +344,19 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
 			}
 			
     }
+		
+		#ifdef PROTOCOL_DEBUG
+    GIZWITS_LOG("\r\n MCU2WiFi[%4d:%4d]: ", gizGetTimerCount(), len);
+    for(i=0; i<len; i++)
+    {
+        GIZWITS_LOG("%02x ", buf[i]);
+			if(i >=2 && buf[i] == 0xFF)
+			{
+				GIZWITS_LOG("%02x ", 0x55);	
+			}
+    }
+    GIZWITS_LOG("\r\n");
+    #endif
 
     return len;
 }
