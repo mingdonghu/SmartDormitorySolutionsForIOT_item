@@ -24,12 +24,12 @@ int main(void)
 	Gizwits_Init();         //协议初始化
 	LCD_Init();				//TFTLCD屏初始化
 	
-	POINT_COLOR = RED;
+	POINT_COLOR = BLACK;
 	LCD_Clear(WHITE);
 	LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 	LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
 	LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
- 	LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+ 	LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 	LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 	
 

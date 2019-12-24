@@ -22,6 +22,7 @@
 #include "led.h"
 #include "key.h"
 #include "lcd.h"
+#include "delay.h"
 
 
 static uint32_t timerMsCount;
@@ -31,6 +32,14 @@ static uint32_t timerMsCount;
 dataPoint_t currentDataPoint;
 
 uint8_t RxWifiBuffer = 0;
+
+
+uint8_t wifi_state= 0;	//记录WiFi连接状态， wifi_state: 0 -- wifi断开; wifi_state : 1 -- wifi连接
+
+protocolTime_t GetNtpVal = {0,0,0,0,0,0,0}; //记录网络同步时间[年-月-日-时-分-秒]，24小时制
+
+uint8_t key_status;
+
 
 /**@} */
 /**@name Gizwits User Interface
@@ -104,11 +113,27 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
       case WIFI_DISCON_ROUTER:
  
         break;
-      case WIFI_CON_M2M: 
-			GIZWITS_LOG("\r\n wifi device is connect! \r\n");
+      case WIFI_CON_M2M:
+	  		wifi_state = 1; //wifi已连接
+			GIZWITS_LOG("\r\n wifi is connect! \r\n");
+				LCD_Clear(BLUE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is connect!");
         break;
       case WIFI_DISCON_M2M:	
-	  	GIZWITS_LOG("\r\n wifi device is disconnect! \r\n");
+	  		wifi_state = 0; //wifi已断开
+	  		GIZWITS_LOG("\r\n wifi is disconnect! \r\n");
+				LCD_Clear(RED);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is disconnect!");
         break;
       case WIFI_RSSI:
         GIZWITS_LOG("RSSI %d\n", wifiData->rssi);
@@ -119,7 +144,35 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         break;
       case WIFI_NTP:
         GIZWITS_LOG("WIFI_NTP : [%d-%d-%d %02d:%02d:%02d][%d] \n",ptime->year,ptime->month,ptime->day,ptime->hour,ptime->minute,ptime->second,ptime->ntp);
-        break;
+				GetNtpVal.year = ptime->year;
+				GetNtpVal.month = ptime->month;
+				GetNtpVal.day   = ptime->day;
+				GetNtpVal.hour  = ptime->hour;
+				GetNtpVal.minute = ptime->minute;
+				GetNtpVal.second = ptime->second;
+			if(key_status== KEY1_PRES)
+			{
+				LCD_Clear(BLUE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
+				LCD_ShowString(50,170,200,16,16,"WIFI is connect!");
+				
+				LCD_ShowNum(30,150,GetNtpVal.year,4,16);
+				LCD_ShowChar(70,150,'-',12,1);
+				LCD_ShowNum(90,150,GetNtpVal.month,2,16);
+				LCD_ShowChar(110,150,'-',12,1);
+				LCD_ShowNum(130,150,GetNtpVal.day,2,16);
+				LCD_ShowChar(150,150,'#',12,1);
+				LCD_ShowNum(170,150,GetNtpVal.hour,2,16);
+				LCD_ShowChar(190,150,':',12,1);
+				LCD_ShowNum(210,150,GetNtpVal.minute,2,16);
+				LCD_ShowChar(230,150,':',12,1);
+				LCD_ShowNum(250,150,GetNtpVal.second,2,16);
+			}
+		break;
       case MODULE_INFO:
             GIZWITS_LOG("MODULE INFO ...\n");
       #if MODULE_TYPE
@@ -151,7 +204,20 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 
 void userHandle(void)
 {
+	static u8 t = 0;
 
+	if(wifi_state){
+		t++;
+		if(t == 10){
+			t = 0;
+			gizwitsGetNTP(); //请求NTP网络时间
+		}
+		delay_ms(100);
+	}else{
+		if(t != 0){
+			t = 0;
+		}
+	}
 	
 }
 
@@ -235,34 +301,37 @@ void TIMER_IRQ_FUN(void)
 		key = KEY_Scan(0);
 			if(key == KEY1_PRES)
 			{//KEY1 按键
+				key_status = key;
 				gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link 模式接入
 				LCD_Clear(WHITE);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
 				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
-				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 				LCD_ShowString(50,170,200,16,16,"WIFI is ok in Airlink");
 			}
 			else if(key == KEY0_PRES)
 			{// KEY0 按键
-				gizwitsSetMode(WIFI_SOFTAP_MODE);
+				key_status = key;
+				//gizwitsSetMode(WIFI_SOFTAP_MODE);
 				LCD_Clear(WHITE);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
 				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
-				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 				LCD_ShowString(50,170,200,16,16,"WIFI is ok in SoftAP");
 			}
 			else if(key == WKUP_PRES)
 			{//KEY_UP 按键
+				key_status = key;
 				gizwitsSetMode(WIFI_RESET_MODE);//WIFI 复位
 				LCD_Clear(WHITE);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
 				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
-				LCD_ShowString(30,110,200,16,16,"KEY0: SoftAP mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 				LCD_ShowString(50,170,200,16,16,"WIFI is ok in RESET");
 			}
@@ -300,9 +369,6 @@ void UART_IRQ_FUN(void)
 		//GIZWITS_LOG("\r\n usart3_RX_IT is ok ! \r\n");
 	}
 	
-
-
-  //gizPutData(&value, 1);
 }
 
 

@@ -38,6 +38,8 @@ extern "C" {
 
 
 extern dataPoint_t currentDataPoint;
+extern uint8_t wifi_state ;
+
 
 void TIMER_IRQ_FUN(void);
 void UART_IRQ_FUN(void);
