@@ -40,6 +40,8 @@ protocolTime_t GetNtpVal = {0,0,0,0,0,0,0}; //记录网络同步时间[年-月-日-时-分-秒
 
 uint8_t key_status;
 
+uint8_t led_status = 1; //初始状态为关灯
+
 
 /**@} */
 /**@name Gizwits User Interface
@@ -90,11 +92,13 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         {
           //user handle
           LED0 = 0; //LED0 亮
+          led_status = 0;
         }
         else
         {
           //user handle
           LED0 = 1; //LED0 灭
+          led_status = 1;
         }
         break;
 
@@ -205,15 +209,33 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 void userHandle(void)
 {
 	static u8 t = 0;
+	
+	if(wifi_state){		//wifi模组已连接云端
 
-	if(wifi_state){
+		if(key_status == KEY0_PRES){
+			currentDataPoint.valueFireMonitor = FireMonitor_VALUE0;//有火灾
+		}
+		else{
+			currentDataPoint.valueFireMonitor = FireMonitor_VALUE1; //无火灾
+		}
+
+		switch(led_status)
+		{
+			case 0: currentDataPoint.valueLED_status = LED_status_VALUE0; //上报灯光开状态
+					break;
+			case 1: currentDataPoint.valueLED_status = LED_status_VALUE1; //上报灯光关状态
+					break;
+			default: break;
+		}
+
 		t++;
 		if(t == 10){
 			t = 0;
 			gizwitsGetNTP(); //请求NTP网络时间
 		}
 		delay_ms(100);
-	}else{
+	}
+	else{
 		if(t != 0){
 			t = 0;
 		}
@@ -315,7 +337,7 @@ void TIMER_IRQ_FUN(void)
 			{// KEY0 按键
 				key_status = key;
 				//gizwitsSetMode(WIFI_SOFTAP_MODE);
-				LCD_Clear(WHITE);
+				LCD_Clear(RED);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
 				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");

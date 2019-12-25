@@ -168,6 +168,16 @@ static int8_t ICACHE_FLASH_ATTR gizCheckReport(dataPoint_t *cur, dataPoint_t *la
         GIZWITS_LOG("valueLED Changed\n");
         ret = 1;
     }
+    if(last->valueFireMonitor != cur->valueFireMonitor)
+    {
+        GIZWITS_LOG("valueFireMonitor Changed\n");
+        ret = 1;
+    }
+    if(last->valueLED_status != cur->valueLED_status)
+    {
+        GIZWITS_LOG("valueLED_status Changed\n");
+        ret = 1;
+    }
 
 
     if(1 == ret)
@@ -194,9 +204,29 @@ static int8_t ICACHE_FLASH_ATTR gizDataPoints2ReportData(dataPoint_t *dataPoints
     }
 
     gizMemset((uint8_t *)devStatusPtr->wBitBuf,0,sizeof(devStatusPtr->wBitBuf));
+    gizMemset((uint8_t *)devStatusPtr->rBitBuf,0,sizeof(devStatusPtr->rBitBuf));
 
     gizStandardCompressValue(LED_BYTEOFFSET,LED_BITOFFSET,LED_LEN,(uint8_t *)devStatusPtr,dataPoints->valueLED);
+    if(dataPoints->valueFireMonitor >= FireMonitor_VALUE_MAX)
+    {
+        GIZWITS_LOG("[ERROR] valueFireMonitor Error , Illegal Overstep\n");
+        return -1;
+    }
+    else
+    {
+        gizStandardCompressValue(FireMonitor_BYTEOFFSET,FireMonitor_BITOFFSET,FireMonitor_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFireMonitor);  
+    }
+    if(dataPoints->valueLED_status >= LED_status_VALUE_MAX)
+    {
+        GIZWITS_LOG("[ERROR] valueLED_status Error , Illegal Overstep\n");
+        return -1;
+    }
+    else
+    {
+        gizStandardCompressValue(LED_status_BYTEOFFSET,LED_status_BITOFFSET,LED_status_LEN,(uint8_t *)devStatusPtr,dataPoints->valueLED_status);  
+    }
     gizByteOrderExchange((uint8_t *)devStatusPtr->wBitBuf,sizeof(devStatusPtr->wBitBuf));
+    gizByteOrderExchange((uint8_t *)devStatusPtr->rBitBuf,sizeof(devStatusPtr->rBitBuf));
 
 
 
@@ -940,7 +970,7 @@ void gizwitsInit(void)
     pRb.rbBuff = rbBuf;
     if(0 == rbCreate(&pRb))
 	{
-		GIZWITS_LOG("\r\n rbCreate Success \r\n");
+		GIZWITS_LOG("rbCreate Success \n");
 	}
 	else
 	{
@@ -978,6 +1008,7 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
+
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t));   
             break;
         case WIFI_SOFTAP_MODE:
@@ -1019,6 +1050,7 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
+
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t));
             break;
         case WIFI_NINABLE_MODE:
@@ -1046,6 +1078,7 @@ int32_t gizwitsSetMode(uint8_t mode)
             {
                 GIZWITS_LOG("ERR: uart write error %d \n", ret);
             }
+
             gizProtocolWaitAck((uint8_t *)&setDefault, sizeof(protocolCommon_t)); 
             break;
         default:
@@ -1172,10 +1205,8 @@ int32_t gizwitsHandle(dataPoint_t *currentData)
     /*resend strategy*/
     gizProtocolAckHandle();
     ret = gizProtocolGetOnePacket(&pRb, gizwitsProtocol.protocolBuf, &protocolLen);
-		
-		//GIZWITS_LOG("gizwitsHandle-ret = %d\r\n", ret);
-    
-	if(0 == ret)
+
+    if(0 == ret)
     {
         GIZWITS_LOG("Get One Packet!\n");
         

@@ -67,6 +67,7 @@ extern "C" {
 /**@} */
 
 
+
 #define MAX_PACKAGE_LEN    (sizeof(devStatus_t)+sizeof(attrFlags_t)+20)                 ///< Data buffer maximum length
 #define RB_MAX_LEN          (MAX_PACKAGE_LEN*2)     ///< Maximum length of ring buffer
 
@@ -76,17 +77,37 @@ extern "C" {
 #define LED_BYTEOFFSET                    0
 #define LED_BITOFFSET                     0
 #define LED_LEN                           1
+#define FireMonitor_BYTEOFFSET                    1
+#define FireMonitor_BITOFFSET                     0
+#define FireMonitor_LEN                           1
+#define LED_status_BYTEOFFSET                    1
+#define LED_status_BITOFFSET                     1
+#define LED_status_LEN                           1
 
 /**@} */
 
 /** Writable data points Boolean and enumerated variables occupy byte size */
 #define COUNT_W_BIT 1
 
+/** Read-only data points Boolean and enumerated variables occupy byte size */
+#define COUNT_R_BIT 1
 
 
 
 
 
+typedef enum
+{
+    FireMonitor_VALUE0 = 0,//有火灾
+    FireMonitor_VALUE1 = 1,//无火灾
+    FireMonitor_VALUE_MAX,
+} FireMonitor_ENUM_T;
+typedef enum
+{
+    LED_status_VALUE0 = 0,//已开灯
+    LED_status_VALUE1 = 1,//已关灯
+    LED_status_VALUE_MAX,
+} LED_status_ENUM_T;
 
 /** Event enumeration */
 typedef enum
@@ -270,6 +291,8 @@ typedef enum
 /** User Area Device State Structure */
 typedef struct {
   bool valueLED;
+  uint32_t valueFireMonitor;
+  uint32_t valueLED_status;
 } dataPoint_t;
 
 
@@ -295,6 +318,7 @@ typedef struct {
 
 typedef struct {
   uint8_t wBitBuf[COUNT_W_BIT];
+  uint8_t rBitBuf[COUNT_R_BIT];
 } devStatus_t; 
 
 
