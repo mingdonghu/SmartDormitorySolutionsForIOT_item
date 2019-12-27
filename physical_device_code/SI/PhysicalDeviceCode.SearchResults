@@ -1,0 +1,20 @@
+---- unsigned long Matches (4 in 3 files) ----
+Common.c (physical_device_code\utils):63
+ * htonl unsigned long  -> Network byte order
+ * ntohl Network byte order -> unsigned long
+ */
+uint32_t ICACHE_FLASH_ATTR exchangeWord(uint32_t value)
+Core_cm3.h (physical_device_code\core):785
+/* intrinsic unsigned long long __ldrexd(volatile void *ptr) */
+/* intrinsic int __strexd(unsigned long long val, volatile void *ptr) */
+/* intrinsic void __enable_irq();     */
+/* intrinsic void __disable_irq();    */
+Core_cm3.h (physical_device_code\core):1073
+/* intrinsic unsigned long __STREX(unsigned long, unsigned long); */
+/* intrinsic unsigned long __LDREX(unsigned long *);              */
+
+
+Sys.h (physical_device_code\system\sys):25
+#define MEM_ADDR(addr)  *((volatile unsigned long  *)(addr)) 
+#define BIT_ADDR(addr, bitnum)   MEM_ADDR(BITBAND(addr, bitnum)) 
+//IO¿ÚµØÖ·Ó³Éä
