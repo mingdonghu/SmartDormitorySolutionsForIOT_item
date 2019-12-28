@@ -419,22 +419,23 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
         //USART_SendData(UART, buf[i]);//STM32 test demo
         //Serial port to achieve the function, the buf[i] sent to the module
         
-			USART_SendData(USART3,buf[i]);
+		USART_SendData(USART3,buf[i]);
 	    while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕
 	        
-			if(i >=2 && buf[i] == 0xFF)
-			{
-				//Serial port to achieve the function, the 0x55 sent to the module
-				//USART_SendData(UART, 0x55);//STM32 test demo
-						
-				USART_SendData(USART3,0x55);
-				while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕 
-			}
+		if(i >=2 && buf[i] == 0xFF)
+		{
+			//Serial port to achieve the function, the 0x55 sent to the module
+			//USART_SendData(UART, 0x55);//STM32 test demo
+					
+			USART_SendData(USART3,0x55);
+			while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕 
+		}
 			
     }
 		
-		#ifdef PROTOCOL_DEBUG
-    GIZWITS_LOG("\r\n MCU2WiFi[%4d:%4d]: ", gizGetTimerCount(), len);
+	#ifdef PROTOCOL_DEBUG
+
+	GIZWITS_LOG("\r\n MCU2WiFi[%4d:%4d]: ", gizGetTimerCount(), len);
     for(i=0; i<len; i++)
     {
         GIZWITS_LOG("%02x ", buf[i]);
@@ -444,7 +445,8 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
 			}
     }
     GIZWITS_LOG("\r\n");
-    #endif
+
+	#endif
 
     return len;
 }

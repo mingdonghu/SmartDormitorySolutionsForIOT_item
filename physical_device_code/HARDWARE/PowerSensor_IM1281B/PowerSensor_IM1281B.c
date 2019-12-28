@@ -52,8 +52,8 @@ uint32_t chk_crc(uint8_t *buf, uint8_t len)
 		crc = calc_crc(*buf, crc);
 		buf++;
 	}
-	hi = (uint8_t)(crc % 256);
-	lo = (uint8_t)(crc / 256);
+	hi = (uint8_t)(crc % 256); //低8位
+	lo = (uint8_t)(crc / 256); //高8位
 	crc = (((uint32_t)(hi)) << 8 ) | lo;
 
 	return crc;
@@ -64,8 +64,8 @@ void read_data(void)
 	uint8_t i;
 	union crc_data crc_now = {0, 0};
 
-	if(read_enable == 1){
-		//一秒钟抄读一次模块
+	if(read_enable == 1){ //一秒钟抄读一次模块
+
 		read_enable = 0; //清除1秒钟到读标志
 		Tx_Buffer[0] = Read_ID;
 		Tx_Buffer[1] = 0x03;
@@ -76,8 +76,9 @@ void read_data(void)
 		crc_now.word16 = chk_crc(Tx_Buffer,6);
 		Tx_Buffer[6] = crc_now.byte[1];  //CRC校验 低字节码在前
  		Tx_Buffer[7] = crc_now.byte[0];
-		//向模块发送8Bytes data
-		for(i = 0; i < sizeof(Tx_Buffer)/sizeof(Tx_Buffer[0]); i++){
+		
+		for(i = 0; i < sizeof(Tx_Buffer)/sizeof(Tx_Buffer[0]); i++){//向模块发送8Bytes data
+
 			USART_SendData(USART2,Tx_Buffer[i]);
 	    	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕
 		}
@@ -94,6 +95,7 @@ void analysis_data(void)
 	if(receive_finished == 1){ //接收完成
 
 		receive_finished = 0; //清除接收完成标志
+
 		if(Rx_Buffer[0] = Read_ID){	//确认ID正确
 
 			crc_now.word16 = chk_crc(Rx_Buffer,receive_number - 2); //receive_number是接收数据总长度
@@ -138,6 +140,7 @@ void USART2_IRQHandler(void)
 	static uint8_t count = 0;
 	
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){	//接收到数据
+
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 
 		if(count >= 29){
@@ -145,6 +148,7 @@ void USART2_IRQHandler(void)
 		}
 		else{
 			Rx_Buffer[count] = USART_ReceiveData(USART2);
+			receive_number = 0;
 			if(count == 28){
 				receive_finished= 1; //接收完成
 				receive_number = 29;
