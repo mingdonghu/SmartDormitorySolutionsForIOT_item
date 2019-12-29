@@ -7,6 +7,10 @@
 #include "timer.h"
 #include "usart3.h"
 #include "gizwits_product.h" 
+#include "Voice_MY2480_16p.h"
+#include "PowerSensor_IM1281B.h"
+#include "FireMQ2_Sensor.h"
+
 
 //function statement
 void UART_test(void);
@@ -18,11 +22,15 @@ int main(void)
 {		
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
-	uart_init(115200);	 //串口初始化为115200
+	uart_init(115200);	 //日志打印调试串口初始化为115200
  	LED_Init();			     //LED端口初始化
 	KEY_Init();          //初始化与按键连接的硬件接口
-	Gizwits_Init();         //协议初始化
+	Gizwits_Init();         //机智云串口-WiFi协议初始化
 	LCD_Init();				//TFTLCD屏初始化
+	MY2480_Init();    //语音播放模块初始化
+	usart2_init(4800);   //与IM1281B单相电能计量传感器通讯，默认为4800bps,USART2_TX   PA2   USART2_RX   PA3
+	EXTIX_Init();       //MQ-2烟雾、可燃气体传感器响应初始化【用于火灾监测】
+	
 	
 	POINT_COLOR = BLACK;
 	LCD_Clear(WHITE);
@@ -32,15 +40,17 @@ int main(void)
  	LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 	LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 	
-
 	//轮询
 	while(1)
 	{
 		
+		//read_IM1281B_data();
+		//analysis_IM1281B_data();
 		
-		gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
+		
+		//gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
 			
-		userHandle();//用户采集
+		//userHandle();//用户采集
 	
 
 	}	

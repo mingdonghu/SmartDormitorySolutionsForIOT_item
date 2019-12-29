@@ -16,10 +16,10 @@ extern float CO2_data;
 
 void usart2_init(u32 bound);			//´®¿Ú2³õÊ¼»¯ 
 
-uint8_t calc_crc(uint8_t crc_buf, uint8_t crc);
+uint32_t calc_crc(uint8_t crc_buf, uint32_t crc);
 uint32_t chk_crc(uint8_t *buf, uint8_t len);
-void read_data(void);
-void analysis_data(void);
+void read_IM1281B_data(void);
+void analysis_IM1281B_data(void);
 
 
 

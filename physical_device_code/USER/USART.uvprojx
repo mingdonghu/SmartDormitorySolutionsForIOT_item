@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\TIMER;..\HARDWARE\USART3;..\Gizwits;..\Utils;..\HARDWARE\LCD</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\TIMER;..\HARDWARE\USART3;..\Gizwits;..\Utils;..\HARDWARE\LCD;..\HARDWARE\Voice_MY2480_16p;..\HARDWARE\PowerSensor_IM1281B;..\HARDWARE\FireMQ2_Sensor</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -453,6 +453,21 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
             </File>
+            <File>
+              <FileName>Voice_MY2480_16p.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Voice_MY2480_16p\Voice_MY2480_16p.c</FilePath>
+            </File>
+            <File>
+              <FileName>PowerSensor_IM1281B.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\PowerSensor_IM1281B\PowerSensor_IM1281B.c</FilePath>
+            </File>
+            <File>
+              <FileName>FireMQ2_Sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\FireMQ2_Sensor\FireMQ2_Sensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -522,6 +537,11 @@
               <FileName>stm32f10x_fsmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32F10x_FWLib\src\stm32f10x_fsmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\STM32F10x_FWLib\src\stm32f10x_exti.c</FilePath>
             </File>
           </Files>
         </Group>

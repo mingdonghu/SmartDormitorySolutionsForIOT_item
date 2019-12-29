@@ -23,6 +23,9 @@
 #include "key.h"
 #include "lcd.h"
 #include "delay.h"
+#include "PowerSensor_IM1281B.h"
+#include "Voice_MY2480_16p.h"
+#include "FireMQ2_Sensor.h"
 
 
 static uint32_t timerMsCount;
@@ -315,10 +318,25 @@ void mcuRestart(void)
 void TIMER_IRQ_FUN(void)
 {
 	int key = 0;
+	static uint32_t countRead = 0; 
 	
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)	//检查TIM3更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
+
+		if(countRead >= 999){ //1S产生一次读IM1281B电能计量模块的标志
+			read_enable = 1;
+			countRead = 0;
+			volumeAdd();  //增加扬声器音量
+			
+		}else{
+			countRead++;
+		}
+	
+		if(readMQ_DO == 0){
+			//user_Handel
+			voice2Play();
+		}
 		
 		key = KEY_Scan(0);
 			if(key == KEY1_PRES)
@@ -336,6 +354,8 @@ void TIMER_IRQ_FUN(void)
 			else if(key == KEY0_PRES)
 			{// KEY0 按键
 				key_status = key;
+				voice2Play();
+				
 				//gizwitsSetMode(WIFI_SOFTAP_MODE);
 				LCD_Clear(RED);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
@@ -359,7 +379,6 @@ void TIMER_IRQ_FUN(void)
 			}
 		
 		gizTimerMs();
-	
 	}
 
 }
