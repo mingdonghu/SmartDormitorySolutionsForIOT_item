@@ -77,13 +77,52 @@ extern "C" {
 #define LED_BYTEOFFSET                    0
 #define LED_BITOFFSET                     0
 #define LED_LEN                           1
-#define FireMonitor_BYTEOFFSET                    1
+#define IS_GetUpAlarm_BYTEOFFSET                    0
+#define IS_GetUpAlarm_BITOFFSET                     1
+#define IS_GetUpAlarm_LEN                           1
+#define IS_GoToBedAlarm_BYTEOFFSET                    0
+#define IS_GoToBedAlarm_BITOFFSET                     2
+#define IS_GoToBedAlarm_LEN                           1
+#define FireMonitorState_BYTEOFFSET                    0
+#define FireMonitorState_BITOFFSET                     3
+#define FireMonitorState_LEN                           1
+#define PowerMonitorState_BYTEOFFSET                    0
+#define PowerMonitorState_BITOFFSET                     4
+#define PowerMonitorState_LEN                           1
+#define FireMonitor_BYTEOFFSET                    7
 #define FireMonitor_BITOFFSET                     0
 #define FireMonitor_LEN                           1
-#define LED_status_BYTEOFFSET                    1
+#define LED_status_BYTEOFFSET                    7
 #define LED_status_BITOFFSET                     1
 #define LED_status_LEN                           1
+#define PowerMonitor_BYTEOFFSET                    7
+#define PowerMonitor_BITOFFSET                     2
+#define PowerMonitor_LEN                           1
 
+#define SetGetUpHour_RATIO                         1
+#define SetGetUpHour_ADDITION                      0
+#define SetGetUpHour_MIN                           0
+#define SetGetUpHour_MAX                           23
+#define SetGetUpMinute_RATIO                         1
+#define SetGetUpMinute_ADDITION                      0
+#define SetGetUpMinute_MIN                           0
+#define SetGetUpMinute_MAX                           59
+#define SetGoToBedHour_RATIO                         1
+#define SetGoToBedHour_ADDITION                      0
+#define SetGoToBedHour_MIN                           0
+#define SetGoToBedHour_MAX                           23
+#define SetGoToBedMinute_RATIO                         1
+#define SetGoToBedMinute_ADDITION                      0
+#define SetGoToBedMinute_MIN                           0
+#define SetGoToBedMinute_MAX                           59
+#define SetPowerMonitorVlaue_RATIO                         1
+#define SetPowerMonitorVlaue_ADDITION                      0
+#define SetPowerMonitorVlaue_MIN                           600
+#define SetPowerMonitorVlaue_MAX                           2000
+#define DisplayPowerMonitorVlaue_RATIO                         1
+#define DisplayPowerMonitorVlaue_ADDITION                      600
+#define DisplayPowerMonitorVlaue_MIN                           0
+#define DisplayPowerMonitorVlaue_MAX                           1400
 /**@} */
 
 /** Writable data points Boolean and enumerated variables occupy byte size */
@@ -98,6 +137,18 @@ extern "C" {
 
 typedef enum
 {
+    FireMonitorState_VALUE0 = 0,//工作
+    FireMonitorState_VALUE1 = 1,//复位
+    FireMonitorState_VALUE_MAX,
+} FireMonitorState_ENUM_T;
+typedef enum
+{
+    PowerMonitorState_VALUE0 = 0,//工作
+    PowerMonitorState_VALUE1 = 1,//复位
+    PowerMonitorState_VALUE_MAX,
+} PowerMonitorState_ENUM_T;
+typedef enum
+{
     FireMonitor_VALUE0 = 0,//有火灾
     FireMonitor_VALUE1 = 1,//无火灾
     FireMonitor_VALUE_MAX,
@@ -108,6 +159,12 @@ typedef enum
     LED_status_VALUE1 = 1,//已关灯
     LED_status_VALUE_MAX,
 } LED_status_ENUM_T;
+typedef enum
+{
+    PowerMonitor_VALUE0 = 0,//不存在大功率
+    PowerMonitor_VALUE1 = 1,//存在大功率
+    PowerMonitor_VALUE_MAX,
+} PowerMonitor_ENUM_T;
 
 /** Event enumeration */
 typedef enum
@@ -130,6 +187,15 @@ typedef enum
   MODULE_INFO,                                      ///< Module information event
   TRANSPARENT_DATA,                                 ///< Transparency events
   EVENT_LED,
+  EVENT_IS_GetUpAlarm,
+  EVENT_IS_GoToBedAlarm,
+  EVENT_FireMonitorState,
+  EVENT_PowerMonitorState,
+  EVENT_SetGetUpHour,
+  EVENT_SetGetUpMinute,
+  EVENT_SetGoToBedHour,
+  EVENT_SetGoToBedMinute,
+  EVENT_SetPowerMonitorVlaue,
   EVENT_TYPE_MAX                                    ///< Enumerate the number of members to calculate (user accidentally deleted)
 } EVENT_TYPE_T;
 
@@ -291,14 +357,34 @@ typedef enum
 /** User Area Device State Structure */
 typedef struct {
   bool valueLED;
+  bool valueIS_GetUpAlarm;
+  bool valueIS_GoToBedAlarm;
+  uint32_t valueFireMonitorState;
+  uint32_t valuePowerMonitorState;
+  uint32_t valueSetGetUpHour;
+  uint32_t valueSetGetUpMinute;
+  uint32_t valueSetGoToBedHour;
+  uint32_t valueSetGoToBedMinute;
+  uint32_t valueSetPowerMonitorVlaue;
   uint32_t valueFireMonitor;
   uint32_t valueLED_status;
+  uint32_t valuePowerMonitor;
+  uint32_t valueDisplayPowerMonitorVlaue;
 } dataPoint_t;
 
 
 /** Corresponding to the protocol "4.10 WiFi module control device" in the flag " attr_flags" */ 
 typedef struct {
   uint8_t flagLED:1;
+  uint8_t flagIS_GetUpAlarm:1;
+  uint8_t flagIS_GoToBedAlarm:1;
+  uint8_t flagFireMonitorState:1;
+  uint8_t flagPowerMonitorState:1;
+  uint8_t flagSetGetUpHour:1;
+  uint8_t flagSetGetUpMinute:1;
+  uint8_t flagSetGoToBedHour:1;
+  uint8_t flagSetGoToBedMinute:1;
+  uint8_t flagSetPowerMonitorVlaue:1;
 } attrFlags_t;
 
 
@@ -306,6 +392,11 @@ typedef struct {
 
 typedef struct {
   uint8_t wBitBuf[COUNT_W_BIT];
+  uint8_t valueSetGetUpHour;
+  uint8_t valueSetGetUpMinute;
+  uint8_t valueSetGoToBedHour;
+  uint8_t valueSetGoToBedMinute;
+  uint16_t valueSetPowerMonitorVlaue;
 } attrVals_t;
 
 /** The flag "attr_flags (1B)" + data value "P0 protocol area" in the corresponding protocol "4.10 WiFi module control device"attr_vals(6B)" */ 
@@ -318,7 +409,13 @@ typedef struct {
 
 typedef struct {
   uint8_t wBitBuf[COUNT_W_BIT];
+  uint8_t valueSetGetUpHour;
+  uint8_t valueSetGetUpMinute;
+  uint8_t valueSetGoToBedHour;
+  uint8_t valueSetGoToBedMinute;
+  uint16_t valueSetPowerMonitorVlaue;
   uint8_t rBitBuf[COUNT_R_BIT];
+  uint16_t valueDisplayPowerMonitorVlaue;
 } devStatus_t; 
 
 

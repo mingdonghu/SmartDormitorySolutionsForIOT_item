@@ -44,14 +44,9 @@ int main(void)
 	while(1)
 	{
 		
-		//read_IM1281B_data();
-		//analysis_IM1281B_data();
-		
-		
-		//gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
+		gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
 			
-		//userHandle();//用户采集
-	
+		userHandle();//用户采集
 
 	}	
 	

@@ -7,8 +7,8 @@
 void EXTIX_Init(void)
 {
  	GPIO_InitTypeDef GPIO_InitStructure;
-  EXTI_InitTypeDef EXTI_InitStructure;
- 	NVIC_InitTypeDef NVIC_InitStructure;
+//  EXTI_InitTypeDef EXTI_InitStructure;
+// 	NVIC_InitTypeDef NVIC_InitStructure;
 
  	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF,ENABLE);//使能PORTF时钟
 
@@ -16,7 +16,8 @@ void EXTIX_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
  	GPIO_Init(GPIOF, &GPIO_InitStructure);//初始化GPIOF0 引脚
 	
-
+	//中断触发存在故障，初步判断应该是传感器硬件问题，可尝试低电平触发，而非下降沿触发
+	
 //	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);	//使能复用功能时钟
 
 // //GPIOF.0  中断线以及中断初始化配置 下降沿触发 PF0
@@ -44,8 +45,7 @@ void EXTI0_IRQHandler(void)
 	if(readMQ_DO == 0)	 	 
 	{				 
 		//user_Handel
-		voice2Play();
-		
+		voice2Play();   //火灾警告
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位 
 	 

@@ -115,7 +115,12 @@ void analysis_IM1281B_data(void)
 			if((crc_now.byte[0] == Rx_Buffer[receive_number - 1]) && 
 				(crc_now.byte[1] == Rx_Buffer[receive_number - 2])){//确定CRC校验正确
 
-				LCD_Clear(WHITE);
+				LCD_Clear(BLUE);
+				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
+				LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
+				LCD_ShowString(30,90,200,16,16,"KEY1: AirLink mode");
+				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
+				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 					
 				//电流数据	
 				rData = (((uint32_t)(Rx_Buffer[3])) << 24 )| (((uint32_t)(Rx_Buffer[4])) << 16 ) |

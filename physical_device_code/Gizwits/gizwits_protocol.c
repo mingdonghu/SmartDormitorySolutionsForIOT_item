@@ -139,6 +139,69 @@ static int8_t ICACHE_FLASH_ATTR gizDataPoint2Event(gizwitsIssued_t *issuedData, 
         dataPoints->valueLED = gizStandardDecompressionValue(LED_BYTEOFFSET,LED_BITOFFSET,LED_LEN,(uint8_t *)&issuedData->attrVals.wBitBuf,sizeof(issuedData->attrVals.wBitBuf));
     }
         
+    if(0x01 == issuedData->attrFlags.flagIS_GetUpAlarm)
+    {
+        info->event[info->num] = EVENT_IS_GetUpAlarm;
+        info->num++;
+        dataPoints->valueIS_GetUpAlarm = gizStandardDecompressionValue(IS_GetUpAlarm_BYTEOFFSET,IS_GetUpAlarm_BITOFFSET,IS_GetUpAlarm_LEN,(uint8_t *)&issuedData->attrVals.wBitBuf,sizeof(issuedData->attrVals.wBitBuf));
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagIS_GoToBedAlarm)
+    {
+        info->event[info->num] = EVENT_IS_GoToBedAlarm;
+        info->num++;
+        dataPoints->valueIS_GoToBedAlarm = gizStandardDecompressionValue(IS_GoToBedAlarm_BYTEOFFSET,IS_GoToBedAlarm_BITOFFSET,IS_GoToBedAlarm_LEN,(uint8_t *)&issuedData->attrVals.wBitBuf,sizeof(issuedData->attrVals.wBitBuf));
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagFireMonitorState)
+    {
+        info->event[info->num] = EVENT_FireMonitorState;
+        info->num++;
+        dataPoints->valueFireMonitorState = gizStandardDecompressionValue(FireMonitorState_BYTEOFFSET,FireMonitorState_BITOFFSET,FireMonitorState_LEN,(uint8_t *)&issuedData->attrVals.wBitBuf,sizeof(issuedData->attrVals.wBitBuf));
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagPowerMonitorState)
+    {
+        info->event[info->num] = EVENT_PowerMonitorState;
+        info->num++;
+        dataPoints->valuePowerMonitorState = gizStandardDecompressionValue(PowerMonitorState_BYTEOFFSET,PowerMonitorState_BITOFFSET,PowerMonitorState_LEN,(uint8_t *)&issuedData->attrVals.wBitBuf,sizeof(issuedData->attrVals.wBitBuf));
+    }
+        
+        
+    if(0x01 == issuedData->attrFlags.flagSetGetUpHour)
+    {
+        info->event[info->num] = EVENT_SetGetUpHour;
+        info->num++;
+        dataPoints->valueSetGetUpHour = gizX2Y(SetGetUpHour_RATIO,  SetGetUpHour_ADDITION, issuedData->attrVals.valueSetGetUpHour); 
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagSetGetUpMinute)
+    {
+        info->event[info->num] = EVENT_SetGetUpMinute;
+        info->num++;
+        dataPoints->valueSetGetUpMinute = gizX2Y(SetGetUpMinute_RATIO,  SetGetUpMinute_ADDITION, issuedData->attrVals.valueSetGetUpMinute); 
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagSetGoToBedHour)
+    {
+        info->event[info->num] = EVENT_SetGoToBedHour;
+        info->num++;
+        dataPoints->valueSetGoToBedHour = gizX2Y(SetGoToBedHour_RATIO,  SetGoToBedHour_ADDITION, issuedData->attrVals.valueSetGoToBedHour); 
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagSetGoToBedMinute)
+    {
+        info->event[info->num] = EVENT_SetGoToBedMinute;
+        info->num++;
+        dataPoints->valueSetGoToBedMinute = gizX2Y(SetGoToBedMinute_RATIO,  SetGoToBedMinute_ADDITION, issuedData->attrVals.valueSetGoToBedMinute); 
+    }
+        
+    if(0x01 == issuedData->attrFlags.flagSetPowerMonitorVlaue)
+    {
+        info->event[info->num] = EVENT_SetPowerMonitorVlaue;
+        info->num++;
+        dataPoints->valueSetPowerMonitorVlaue = gizX2Y(SetPowerMonitorVlaue_RATIO,  SetPowerMonitorVlaue_ADDITION, exchangeBytes(issuedData->attrVals.valueSetPowerMonitorVlaue));
+    }
     
     return 0;
 }
@@ -168,6 +231,51 @@ static int8_t ICACHE_FLASH_ATTR gizCheckReport(dataPoint_t *cur, dataPoint_t *la
         GIZWITS_LOG("valueLED Changed\n");
         ret = 1;
     }
+    if(last->valueIS_GetUpAlarm != cur->valueIS_GetUpAlarm)
+    {
+        GIZWITS_LOG("valueIS_GetUpAlarm Changed\n");
+        ret = 1;
+    }
+    if(last->valueIS_GoToBedAlarm != cur->valueIS_GoToBedAlarm)
+    {
+        GIZWITS_LOG("valueIS_GoToBedAlarm Changed\n");
+        ret = 1;
+    }
+    if(last->valueFireMonitorState != cur->valueFireMonitorState)
+    {
+        GIZWITS_LOG("valueFireMonitorState Changed\n");
+        ret = 1;
+    }
+    if(last->valuePowerMonitorState != cur->valuePowerMonitorState)
+    {
+        GIZWITS_LOG("valuePowerMonitorState Changed\n");
+        ret = 1;
+    }
+    if(last->valueSetGetUpHour != cur->valueSetGetUpHour)
+    {
+        GIZWITS_LOG("valueSetGetUpHour Changed\n");
+        ret = 1;
+    }
+    if(last->valueSetGetUpMinute != cur->valueSetGetUpMinute)
+    {
+        GIZWITS_LOG("valueSetGetUpMinute Changed\n");
+        ret = 1;
+    }
+    if(last->valueSetGoToBedHour != cur->valueSetGoToBedHour)
+    {
+        GIZWITS_LOG("valueSetGoToBedHour Changed\n");
+        ret = 1;
+    }
+    if(last->valueSetGoToBedMinute != cur->valueSetGoToBedMinute)
+    {
+        GIZWITS_LOG("valueSetGoToBedMinute Changed\n");
+        ret = 1;
+    }
+    if(last->valueSetPowerMonitorVlaue != cur->valueSetPowerMonitorVlaue)
+    {
+        GIZWITS_LOG("valueSetPowerMonitorVlaue Changed\n");
+        ret = 1;
+    }
     if(last->valueFireMonitor != cur->valueFireMonitor)
     {
         GIZWITS_LOG("valueFireMonitor Changed\n");
@@ -178,7 +286,20 @@ static int8_t ICACHE_FLASH_ATTR gizCheckReport(dataPoint_t *cur, dataPoint_t *la
         GIZWITS_LOG("valueLED_status Changed\n");
         ret = 1;
     }
+    if(last->valuePowerMonitor != cur->valuePowerMonitor)
+    {
+        GIZWITS_LOG("valuePowerMonitor Changed\n");
+        ret = 1;
+    }
 
+    if(last->valueDisplayPowerMonitorVlaue != cur->valueDisplayPowerMonitorVlaue)
+    {
+        if(currentTime - lastReportTime >= REPORT_TIME_MAX)
+        {
+            GIZWITS_LOG("valueDisplayPowerMonitorVlaue Changed\n");
+            ret = 1;
+        }
+    }
 
     if(1 == ret)
     {
@@ -207,6 +328,26 @@ static int8_t ICACHE_FLASH_ATTR gizDataPoints2ReportData(dataPoint_t *dataPoints
     gizMemset((uint8_t *)devStatusPtr->rBitBuf,0,sizeof(devStatusPtr->rBitBuf));
 
     gizStandardCompressValue(LED_BYTEOFFSET,LED_BITOFFSET,LED_LEN,(uint8_t *)devStatusPtr,dataPoints->valueLED);
+    gizStandardCompressValue(IS_GetUpAlarm_BYTEOFFSET,IS_GetUpAlarm_BITOFFSET,IS_GetUpAlarm_LEN,(uint8_t *)devStatusPtr,dataPoints->valueIS_GetUpAlarm);
+    gizStandardCompressValue(IS_GoToBedAlarm_BYTEOFFSET,IS_GoToBedAlarm_BITOFFSET,IS_GoToBedAlarm_LEN,(uint8_t *)devStatusPtr,dataPoints->valueIS_GoToBedAlarm);
+    if(dataPoints->valueFireMonitorState >= FireMonitorState_VALUE_MAX)
+    {
+        GIZWITS_LOG("[ERROR] valueFireMonitorState Error , Illegal Overstep\n");
+        return -1;
+    }
+    else
+    {
+        gizStandardCompressValue(FireMonitorState_BYTEOFFSET,FireMonitorState_BITOFFSET,FireMonitorState_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFireMonitorState);  
+    }
+    if(dataPoints->valuePowerMonitorState >= PowerMonitorState_VALUE_MAX)
+    {
+        GIZWITS_LOG("[ERROR] valuePowerMonitorState Error , Illegal Overstep\n");
+        return -1;
+    }
+    else
+    {
+        gizStandardCompressValue(PowerMonitorState_BYTEOFFSET,PowerMonitorState_BITOFFSET,PowerMonitorState_LEN,(uint8_t *)devStatusPtr,dataPoints->valuePowerMonitorState);  
+    }
     if(dataPoints->valueFireMonitor >= FireMonitor_VALUE_MAX)
     {
         GIZWITS_LOG("[ERROR] valueFireMonitor Error , Illegal Overstep\n");
@@ -225,10 +366,25 @@ static int8_t ICACHE_FLASH_ATTR gizDataPoints2ReportData(dataPoint_t *dataPoints
     {
         gizStandardCompressValue(LED_status_BYTEOFFSET,LED_status_BITOFFSET,LED_status_LEN,(uint8_t *)devStatusPtr,dataPoints->valueLED_status);  
     }
+    if(dataPoints->valuePowerMonitor >= PowerMonitor_VALUE_MAX)
+    {
+        GIZWITS_LOG("[ERROR] valuePowerMonitor Error , Illegal Overstep\n");
+        return -1;
+    }
+    else
+    {
+        gizStandardCompressValue(PowerMonitor_BYTEOFFSET,PowerMonitor_BITOFFSET,PowerMonitor_LEN,(uint8_t *)devStatusPtr,dataPoints->valuePowerMonitor);  
+    }
     gizByteOrderExchange((uint8_t *)devStatusPtr->wBitBuf,sizeof(devStatusPtr->wBitBuf));
     gizByteOrderExchange((uint8_t *)devStatusPtr->rBitBuf,sizeof(devStatusPtr->rBitBuf));
 
+    devStatusPtr->valueSetGetUpHour = gizY2X(SetGetUpHour_RATIO,  SetGetUpHour_ADDITION, dataPoints->valueSetGetUpHour); 
+    devStatusPtr->valueSetGetUpMinute = gizY2X(SetGetUpMinute_RATIO,  SetGetUpMinute_ADDITION, dataPoints->valueSetGetUpMinute); 
+    devStatusPtr->valueSetGoToBedHour = gizY2X(SetGoToBedHour_RATIO,  SetGoToBedHour_ADDITION, dataPoints->valueSetGoToBedHour); 
+    devStatusPtr->valueSetGoToBedMinute = gizY2X(SetGoToBedMinute_RATIO,  SetGoToBedMinute_ADDITION, dataPoints->valueSetGoToBedMinute); 
 
+    devStatusPtr->valueSetPowerMonitorVlaue = exchangeBytes(gizY2X(SetPowerMonitorVlaue_RATIO,  SetPowerMonitorVlaue_ADDITION, dataPoints->valueSetPowerMonitorVlaue)); 
+    devStatusPtr->valueDisplayPowerMonitorVlaue = exchangeBytes(gizY2X(DisplayPowerMonitorVlaue_RATIO,  DisplayPowerMonitorVlaue_ADDITION, dataPoints->valueDisplayPowerMonitorVlaue)); 
 
 
 
