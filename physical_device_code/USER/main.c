@@ -46,7 +46,7 @@ int main(void)
 		
 		gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
 			
-		userHandle();//用户采集
+		userHandle();//用户采集上传
 
 	}	
 	

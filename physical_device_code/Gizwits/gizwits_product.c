@@ -623,7 +623,7 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
 				GIZWITS_LOG("%02x ", 0x55);	
 			}
     }
-    GIZWITS_LOG("\r\n");
+    GIZWITS_LOG("\r\n");  //GIZWITS_LOG == printf
 
 	#endif
 
