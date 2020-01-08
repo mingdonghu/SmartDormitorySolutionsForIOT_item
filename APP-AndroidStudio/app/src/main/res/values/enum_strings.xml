@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="enum_FireMonitorState">
+        <item>工作 </item>
+        <item>复位 </item>
+    </string-array>
+    <string-array name="enum_PowerMonitorState">
+        <item>工作 </item>
+        <item>复位 </item>
+    </string-array>
+    <string-array name="enum_FireMonitor">
+        <item>有火灾 </item>
+        <item>无火灾 </item>
+    </string-array>
+    <string-array name="enum_LED_status">
+        <item>已开灯 </item>
+        <item>已关灯 </item>
+    </string-array>
+    <string-array name="enum_PowerMonitor">
+        <item>不存在大功率 </item>
+        <item>存在大功率 </item>
+    </string-array>
+	
+</resources>
