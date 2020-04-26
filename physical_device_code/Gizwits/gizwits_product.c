@@ -18,7 +18,8 @@
 #include "gizwits_product.h"
 #include "common.h"
 
-#include "usart3.h"		//添加与修改
+//添加与修改
+#include "usart3.h"		
 #include "led.h"
 #include "key.h"
 #include "lcd.h"
@@ -218,7 +219,6 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 			power_cmp_val = currentDataPoint.valueSetPowerMonitorVlaue;
 			break;
 		
-
       case WIFI_SOFTAP:
         break;
       case WIFI_AIRLINK:
@@ -331,8 +331,7 @@ void userHandle(void)
 
 		if(fire_status == 1){
 			currentDataPoint.valueFireMonitor = FireMonitor_VALUE0;//上报有火灾
-		}
-		else{
+		}else{
 			currentDataPoint.valueFireMonitor = FireMonitor_VALUE1; //上报无火灾
 		}
 
@@ -357,8 +356,7 @@ void userHandle(void)
 		}
 		delay_ms(100);
 		
-	}
-	else{
+	}else{
 		if(t != 0){
 			t = 0;
 		}
@@ -611,21 +609,19 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
 		}
 			
     }
-		
-	#ifdef PROTOCOL_DEBUG
+
+#ifdef PROTOCOL_DEBUG
 
 	GIZWITS_LOG("\r\n MCU2WiFi[%4d:%4d]: ", gizGetTimerCount(), len);
-    for(i=0; i<len; i++)
-    {
+    for(i=0; i<len; i++){
         GIZWITS_LOG("%02x ", buf[i]);
-			if(i >=2 && buf[i] == 0xFF)
-			{
-				GIZWITS_LOG("%02x ", 0x55);	
-			}
+		if(i >=2 && buf[i] == 0xFF){
+			GIZWITS_LOG("%02x ", 0x55);	
+		}
     }
     GIZWITS_LOG("\r\n");  //GIZWITS_LOG == printf
 
-	#endif
+#endif
 
     return len;
 }
