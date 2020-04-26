@@ -43,7 +43,7 @@ int main(void)
 	//轮询
 	while(1){
 		
-		gizwitsHandle((dataPoint_t *)&currentDataPoint);//云端下行处理
+		gizwitsHandle((dataPoint_t *)&currentDataPoint);//协议处理
 			
 		userHandle();//用户采集上传
 	}	
@@ -56,7 +56,7 @@ void Gizwits_Init(void)
 {	
 	TIM3_Int_Init(9,7199);//1MS系统定时
 	usart3_init(9600);//UART-WIFI初始化
-	userInit();													//设备状态结构体初始化
+	userInit();		//设备状态结构体初始化
 	gizwitsInit();//缓冲区初始化
 }
 
