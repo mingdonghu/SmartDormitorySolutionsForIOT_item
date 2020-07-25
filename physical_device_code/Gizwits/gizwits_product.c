@@ -324,24 +324,29 @@ void userHandle(void)
 {
 	static u8 t = 0;
 	
-	if(wifi_state){		//wifi模组已连接云端
-
+	if(wifi_state)//wifi模组已连接云端
+	{		
 		read_IM1281B_data();   //读取IM1281B单相电能计量模块的数据
 		analysis_IM1281B_data();//解析IM1281B单相电能计量模块发送至MCU的数据
 
-		if(fire_status == 1){
+		if(fire_status == 1)
+		{
 			currentDataPoint.valueFireMonitor = FireMonitor_VALUE0;//上报有火灾
-		}else{
+		}
+		else
+		{
 			currentDataPoint.valueFireMonitor = FireMonitor_VALUE1; //上报无火灾
 		}
 
-		if(Power_data > power_cmp_val){
+		if(Power_data > power_cmp_val)
+		{
 			currentDataPoint.valuePowerMonitor = PowerMonitor_VALUE1; //存在大功率用电器设备
 		}
 
 		currentDataPoint.valueDisplayPowerMonitorVlaue = power_cmp_val;//上报大功率监测的下限值【比较值】
 		
-		switch(led_status){
+		switch(led_status)
+		{
 			case 0: currentDataPoint.valueLED_status = LED_status_VALUE0; //上报灯光开状态
 					break;
 			case 1: currentDataPoint.valueLED_status = LED_status_VALUE1; //上报灯光关状态
@@ -350,14 +355,17 @@ void userHandle(void)
 		}
 
 		t++;
-		if(t == 10){
+		if(t == 10)
+		{
 			t = 0;
 			gizwitsGetNTP(); //请求NTP网络时间
 		}
 		delay_ms(100);
-		
-	}else{
-		if(t != 0){
+	}
+	else
+	{
+		if(t != 0)
+		{
 			t = 0;
 		}
 	}
