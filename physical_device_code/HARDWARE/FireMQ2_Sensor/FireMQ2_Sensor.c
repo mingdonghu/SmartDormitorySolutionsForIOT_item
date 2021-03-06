@@ -10,44 +10,44 @@ void EXTIX_Init(void)
 //  EXTI_InitTypeDef EXTI_InitStructure;
 // 	NVIC_InitTypeDef NVIC_InitStructure;
 
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF,ENABLE);//Ê¹ÄÜPORTFÊ±ÖÓ
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF,ENABLE);//ä½¿èƒ½PORTFæ—¶é’Ÿ
 
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
- 	GPIO_Init(GPIOF, &GPIO_InitStructure);//³õÊ¼»¯GPIOF0 Òı½Å
+ 	GPIO_Init(GPIOF, &GPIO_InitStructure);//åˆå§‹åŒ–GPIOF0 å¼•è„š
 	
-	//ÖĞ¶Ï´¥·¢´æÔÚ¹ÊÕÏ£¬³õ²½ÅĞ¶ÏÓ¦¸ÃÊÇ´«¸ĞÆ÷Ó²¼şÎÊÌâ£¬¿É³¢ÊÔµÍµçÆ½´¥·¢£¬¶ø·ÇÏÂ½µÑØ´¥·¢
+	//ä¸­æ–­è§¦å‘å­˜åœ¨æ•…éšœï¼Œåˆæ­¥åˆ¤æ–­åº”è¯¥æ˜¯ä¼ æ„Ÿå™¨ç¡¬ä»¶é—®é¢˜ï¼Œå¯å°è¯•ä½ç”µå¹³è§¦å‘ï¼Œè€Œéä¸‹é™æ²¿è§¦å‘
 	
-//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);	//Ê¹ÄÜ¸´ÓÃ¹¦ÄÜÊ±ÖÓ
+//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);	//ä½¿èƒ½å¤ç”¨åŠŸèƒ½æ—¶é’Ÿ
 
-// //GPIOF.0  ÖĞ¶ÏÏßÒÔ¼°ÖĞ¶Ï³õÊ¼»¯ÅäÖÃ ÏÂ½µÑØ´¥·¢ PF0
+// //GPIOF.0  ä¸­æ–­çº¿ä»¥åŠä¸­æ–­åˆå§‹åŒ–é…ç½® ä¸‹é™æ²¿è§¦å‘ PF0
 //	GPIO_EXTILineConfig(GPIO_PortSourceGPIOF,GPIO_PinSource0); 
 
 //	EXTI_InitStructure.EXTI_Line=EXTI_Line0;
 //	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-//	EXTI_Init(&EXTI_InitStructure);		//¸ù¾İEXTI_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèEXTI¼Ä´æÆ÷
+//	EXTI_Init(&EXTI_InitStructure);		//æ ¹æ®EXTI_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾EXTIå¯„å­˜å™¨
 
 
-//	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			//Ê¹ÄÜËùÔÚµÄÍâ²¿ÖĞ¶ÏÍ¨µÀ
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;	//ÇÀÕ¼ÓÅÏÈ¼¶
-//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;			//×ÓÓÅÏÈ¼¶
-//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//Ê¹ÄÜÍâ²¿ÖĞ¶ÏÍ¨µÀ
+//	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			//ä½¿èƒ½æ‰€åœ¨çš„å¤–éƒ¨ä¸­æ–­é€šé“
+//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;	//æŠ¢å ä¼˜å…ˆçº§
+//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;			//å­ä¼˜å…ˆçº§
+//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//ä½¿èƒ½å¤–éƒ¨ä¸­æ–­é€šé“
 //	NVIC_Init(&NVIC_InitStructure); 
 
 }
 
-//Íâ²¿ÖĞ¶Ï0·şÎñ³ÌĞò 
+//å¤–éƒ¨ä¸­æ–­0æœåŠ¡ç¨‹åº 
 void EXTI0_IRQHandler(void)
 {
 	
-	 //delay_ms(5);//Ïû¶¶
+	 //delay_ms(5);//æ¶ˆæŠ–
 	GIZWITS_LOG("\r\n MQ event! \r\n");
 	if(readMQ_DO == 0)	 	 
 	{				 
 		//user_Handel
-		voice2Play();   //»ğÔÖ¾¯¸æ
+		voice2Play();   //ç«ç¾è­¦å‘Š
 	}
-	EXTI_ClearITPendingBit(EXTI_Line0); //Çå³ıLINE0ÉÏµÄÖĞ¶Ï±êÖ¾Î» 
+	EXTI_ClearITPendingBit(EXTI_Line0); //æ¸…é™¤LINE0ä¸Šçš„ä¸­æ–­æ ‡å¿—ä½ 
 	 
 }
  

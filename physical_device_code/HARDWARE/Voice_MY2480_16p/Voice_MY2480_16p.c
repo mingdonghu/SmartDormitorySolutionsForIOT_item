@@ -1,23 +1,23 @@
 #include "Voice_MY2480_16p.h"
 
-//³õÊ¼»¯PF5µ½PF1ÎªÊä³ö¿Ú.²¢Ê¹ÄÜÕâÁ½¸ö¿ÚµÄÊ±ÖÓ		    
-//MY2480 IO³õÊ¼»¯
+//åˆå§‹åŒ–PF5åˆ°PF1ä¸ºè¾“å‡ºå£.å¹¶ä½¿èƒ½è¿™ä¸¤ä¸ªå£çš„æ—¶é’Ÿ		    
+//MY2480 IOåˆå§‹åŒ–
 void MY2480_Init(void)
 {
 	 GPIO_InitTypeDef  GPIO_InitStructure;
 	 	
-	 RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);	 //Ê¹ÄÜPF¶Ë¿ÚÊ±ÖÓ
+	 RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);	 //ä½¿èƒ½PFç«¯å£æ—¶é’Ÿ
 		
 	 GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5|GPIO_Pin_4|GPIO_Pin_3|GPIO_Pin_2|GPIO_Pin_1;				 
-	 GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //ÍÆÍìÊä³ö
-	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO¿ÚËÙ¶ÈÎª50MHz
-	 GPIO_Init(GPIOF, &GPIO_InitStructure);					 //¸ù¾İÉè¶¨²ÎÊı³õÊ¼»¯
-	 GPIO_SetBits(GPIOF,GPIO_Pin_5|GPIO_Pin_4|GPIO_Pin_3|GPIO_Pin_2|GPIO_Pin_1); //Êä³ö¸ß
+	 GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //æ¨æŒ½è¾“å‡º
+	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IOå£é€Ÿåº¦ä¸º50MHz
+	 GPIO_Init(GPIOF, &GPIO_InitStructure);					 //æ ¹æ®è®¾å®šå‚æ•°åˆå§‹åŒ–
+	 GPIO_SetBits(GPIOF,GPIO_Pin_5|GPIO_Pin_4|GPIO_Pin_3|GPIO_Pin_2|GPIO_Pin_1); //è¾“å‡ºé«˜
 
 }
 
 /**
-*@ Æğ´²ºÅ²¥·Å
+*@ èµ·åºŠå·æ’­æ”¾
 */
 void voice1Play(void)
 {
@@ -29,7 +29,7 @@ void voice1Play(void)
 }
 
 /**
-*@ »ğÔÖ¾¯±¨²¥·Å
+*@ ç«ç¾è­¦æŠ¥æ’­æ”¾
 */
 void voice2Play(void)
 {
@@ -41,7 +41,7 @@ void voice2Play(void)
 }
 
 /**
-*@ Ï¨µÆºÅ²¥·Å
+*@ ç†„ç¯å·æ’­æ”¾
 */
 void voice3Play(void)
 {
@@ -53,7 +53,7 @@ void voice3Play(void)
 }
 
 /**
-*@ ÒôÁ¿+
+*@ éŸ³é‡+
 */
 void volumeAdd(void)
 {
@@ -65,7 +65,7 @@ void volumeAdd(void)
 }
 
 /**
-*@ ÒôÁ¿-
+*@ éŸ³é‡-
 */
 void volumeSub(void)
 {

@@ -14,7 +14,7 @@ extern float Pf_data;
 extern float CO2_data;
 
 
-void usart2_init(u32 bound);			//´®¿Ú2³õÊ¼»¯ 
+void usart2_init(u32 bound);			//ä¸²å£2åˆå§‹åŒ– 
 
 uint32_t calc_crc(uint8_t crc_buf, uint32_t crc);
 uint32_t chk_crc(uint8_t *buf, uint8_t len);

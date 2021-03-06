@@ -18,7 +18,7 @@
 #include "gizwits_product.h"
 #include "common.h"
 
-//Ìí¼ÓÓëĞŞ¸Ä
+//æ·»åŠ ä¸ä¿®æ”¹
 #include "usart3.h"		
 #include "led.h"
 #include "key.h"
@@ -38,24 +38,24 @@ dataPoint_t currentDataPoint;
 uint8_t RxWifiBuffer = 0;
 
 
-uint8_t wifi_state= 0;	//¼ÇÂ¼WiFiÁ¬½Ó×´Ì¬£¬ wifi_state: 0 -- wifi¶Ï¿ª; wifi_state : 1 -- wifiÁ¬½Ó
+uint8_t wifi_state= 0;	//è®°å½•WiFiè¿æ¥çŠ¶æ€ï¼Œ wifi_state: 0 -- wifiæ–­å¼€; wifi_state : 1 -- wifiè¿æ¥
 
-protocolTime_t GetNtpVal = {0,0,0,0,0,0,0}; //¼ÇÂ¼ÍøÂçÍ¬²½Ê±¼ä[Äê-ÔÂ-ÈÕ-Ê±-·Ö-Ãë]£¬24Ğ¡Ê±ÖÆ
+protocolTime_t GetNtpVal = {0,0,0,0,0,0,0}; //è®°å½•ç½‘ç»œåŒæ­¥æ—¶é—´[å¹´-æœˆ-æ—¥-æ—¶-åˆ†-ç§’]ï¼Œ24å°æ—¶åˆ¶
 
 uint8_t key_status;
 
-uint8_t led_status = 1; //1:³õÊ¼×´Ì¬Îª¹ØµÆ
+uint8_t led_status = 1; //1:åˆå§‹çŠ¶æ€ä¸ºå…³ç¯
 
 uint8_t fire_status = 0;
 
-uint32_t power_cmp_val = 1000; //W ´ó¹¦ÂÊÉè±¸¿¼Á¿Öµ
+uint32_t power_cmp_val = 1000; //W å¤§åŠŸç‡è®¾å¤‡è€ƒé‡å€¼
 
-uint8_t  EN_GetUpAlarm = 0; //1:Ê¹ÄÜÆğ´²ÄÖÖÓ
-uint8_t  EN_GoToBedAlarm = 0; //1:Ê¹ÄÜÏ¨µÆÄÖÖÓ
-uint8_t  GetUpHourSetVal = 0; //Æğ´²ÄÖÖÓÊ±ÖÓÉèÖÃÖµ
-uint8_t  GetUpMinuteSetVal = 0; //Æğ´²ÄÖÖÓ·ÖÖÓÉèÖÃÖµ
-uint8_t  GoToBedHourSetVal = 0;	//Ï¨µÆÄÖÖÓÊ±ÖÓÉèÖÃÖµ
-uint8_t  GoToBedMinuteSetVal = 0;//Ï¨µÆÄÖÖÓ·ÖÖÓÉèÖÃÖµ
+uint8_t  EN_GetUpAlarm = 0; //1:ä½¿èƒ½èµ·åºŠé—¹é’Ÿ
+uint8_t  EN_GoToBedAlarm = 0; //1:ä½¿èƒ½ç†„ç¯é—¹é’Ÿ
+uint8_t  GetUpHourSetVal = 0; //èµ·åºŠé—¹é’Ÿæ—¶é’Ÿè®¾ç½®å€¼
+uint8_t  GetUpMinuteSetVal = 0; //èµ·åºŠé—¹é’Ÿåˆ†é’Ÿè®¾ç½®å€¼
+uint8_t  GoToBedHourSetVal = 0;	//ç†„ç¯é—¹é’Ÿæ—¶é’Ÿè®¾ç½®å€¼
+uint8_t  GoToBedMinuteSetVal = 0;//ç†„ç¯é—¹é’Ÿåˆ†é’Ÿè®¾ç½®å€¼
 
 /**@} */
 /**@name Gizwits User Interface
@@ -105,13 +105,13 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         if(0x01 == currentDataPoint.valueLED)
         {
           //user handle
-          LED0 = 0; //LED0 ÁÁ
+          LED0 = 0; //LED0 äº®
           led_status = 0;
         }
         else
         {
           //user handle
-          LED0 = 1; //LED0 Ãğ
+          LED0 = 1; //LED0 ç­
           led_status = 1;
         }
         break;
@@ -122,12 +122,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         if(0x01 == currentDataPoint.valueIS_GetUpAlarm)
         {
           //user handle
-          EN_GetUpAlarm = 1; //¿ªÆôÆğ´²ÄÖÖÓ
+          EN_GetUpAlarm = 1; //å¼€å¯èµ·åºŠé—¹é’Ÿ
         }
         else
         {
           //user handle 
-          EN_GetUpAlarm = 0;  //¹Ø±ÕÆğ´²ÄÖÖÓ
+          EN_GetUpAlarm = 0;  //å…³é—­èµ·åºŠé—¹é’Ÿ
         }
         break;
 				
@@ -137,12 +137,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         if(0x01 == currentDataPoint.valueIS_GoToBedAlarm)
         {
           //user handle
-          EN_GoToBedAlarm = 1; //¿ªÆôÏ¨µÆÄÖÖÓ
+          EN_GoToBedAlarm = 1; //å¼€å¯ç†„ç¯é—¹é’Ÿ
         }
         else
         {
           //user handle    
-          EN_GoToBedAlarm = 0; //¹Ø±ÕÏ¨µÆÄÖÖÓ
+          EN_GoToBedAlarm = 0; //å…³é—­ç†„ç¯é—¹é’Ÿ
         }
         break;
 				
@@ -150,28 +150,28 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         currentDataPoint.valueSetGetUpHour = dataPointPtr->valueSetGetUpHour;
         GIZWITS_LOG("Evt:EVENT_SetGetUpHour %d\n",currentDataPoint.valueSetGetUpHour);
         //user handle
-        GetUpHourSetVal = currentDataPoint.valueSetGetUpHour; //¼ÇÂ¼Æğ´²ÄÖÖÓµÄÊ±ÖÓÉèÖÃ
+        GetUpHourSetVal = currentDataPoint.valueSetGetUpHour; //è®°å½•èµ·åºŠé—¹é’Ÿçš„æ—¶é’Ÿè®¾ç½®
         break;
 			
       case EVENT_SetGetUpMinute:
         currentDataPoint.valueSetGetUpMinute = dataPointPtr->valueSetGetUpMinute;
         GIZWITS_LOG("Evt:EVENT_SetGetUpMinute %d\n",currentDataPoint.valueSetGetUpMinute);
         //user handle
-        GetUpMinuteSetVal = currentDataPoint.valueSetGetUpMinute; //¼ÇÂ¼Æğ´²ÄÖÖÓµÄ·ÖÖÓÉèÖÃ
+        GetUpMinuteSetVal = currentDataPoint.valueSetGetUpMinute; //è®°å½•èµ·åºŠé—¹é’Ÿçš„åˆ†é’Ÿè®¾ç½®
         break;
 			
       case EVENT_SetGoToBedHour:
         currentDataPoint.valueSetGoToBedHour = dataPointPtr->valueSetGoToBedHour;
         GIZWITS_LOG("Evt:EVENT_SetGoToBedHour %d\n",currentDataPoint.valueSetGoToBedHour);
         //user handle
-        GoToBedHourSetVal = currentDataPoint.valueSetGoToBedHour; //¼ÇÂ¼Ï¨µÆÄÖÖÓµÄÊ±ÖÓÉèÖÃ
+        GoToBedHourSetVal = currentDataPoint.valueSetGoToBedHour; //è®°å½•ç†„ç¯é—¹é’Ÿçš„æ—¶é’Ÿè®¾ç½®
         break;
 			
 	 case EVENT_SetGoToBedMinute:
         currentDataPoint.valueSetGoToBedMinute = dataPointPtr->valueSetGoToBedMinute;
         GIZWITS_LOG("Evt:EVENT_SetGoToBedMinute %d\n",currentDataPoint.valueSetGoToBedMinute);
         //user handle
-        GoToBedMinuteSetVal = currentDataPoint.valueSetGoToBedMinute; //¼ÇÂ¼Ï¨µÆÄÖÖÓµÄÊ±ÖÓÉèÖÃ
+        GoToBedMinuteSetVal = currentDataPoint.valueSetGoToBedMinute; //è®°å½•ç†„ç¯é—¹é’Ÿçš„æ—¶é’Ÿè®¾ç½®
         break;
 		
 	 case EVENT_FireMonitorState:       
@@ -181,12 +181,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 		{         
 			case FireMonitorState_VALUE0:           
 				//user handle
-				//¹¤×÷Ä£Ê½
+				//å·¥ä½œæ¨¡å¼
 				break;         
 			case FireMonitorState_VALUE1:           
 				//user handle
-				//¸´Î»Ä£Ê½
-				fire_status = 0; //½â³ı·¢Éú»ğÔÖ
+				//å¤ä½æ¨¡å¼
+				fire_status = 0; //è§£é™¤å‘ç”Ÿç«ç¾
 				break;          
 			default:           
 				break;        
@@ -200,12 +200,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 		{
 			case PowerMonitorState_VALUE0:
 				//user handle
-				//¹¤×÷Ä£Ê½
+				//å·¥ä½œæ¨¡å¼
 				break;
 			case PowerMonitorState_VALUE1:
 				//user handle
-				//¸´Î»Ä£Ê½
-				currentDataPoint.valuePowerMonitor = PowerMonitor_VALUE0; //²»´æÔÚ´ó¹¦ÂÊ
+				//å¤ä½æ¨¡å¼
+				currentDataPoint.valuePowerMonitor = PowerMonitor_VALUE0; //ä¸å­˜åœ¨å¤§åŠŸç‡
 				break;
 			default:
 				break;
@@ -232,7 +232,7 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
  
         break;
       case WIFI_CON_M2M:
-	  		wifi_state = 1; //wifiÒÑÁ¬½Ó
+	  		wifi_state = 1; //wifiå·²è¿æ¥
 			GIZWITS_LOG("\r\n wifi is connect! \r\n");
 				LCD_Clear(BLUE);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
@@ -243,7 +243,7 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 				LCD_ShowString(50,170,200,16,16,"WIFI is connect!");
         break;
       case WIFI_DISCON_M2M:	
-	  		wifi_state = 0; //wifiÒÑ¶Ï¿ª
+	  		wifi_state = 0; //wifiå·²æ–­å¼€
 	  		GIZWITS_LOG("\r\n wifi is disconnect! \r\n");
 				LCD_Clear(RED);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
@@ -324,32 +324,32 @@ void userHandle(void)
 {
 	static u8 t = 0;
 	
-	if(wifi_state)//wifiÄ£×éÒÑÁ¬½ÓÔÆ¶Ë
+	if(wifi_state)//wifiæ¨¡ç»„å·²è¿æ¥äº‘ç«¯
 	{		
-		read_IM1281B_data();   //¶ÁÈ¡IM1281Bµ¥ÏàµçÄÜ¼ÆÁ¿Ä£¿éµÄÊı¾İ
-		analysis_IM1281B_data();//½âÎöIM1281Bµ¥ÏàµçÄÜ¼ÆÁ¿Ä£¿é·¢ËÍÖÁMCUµÄÊı¾İ
+		read_IM1281B_data();   //è¯»å–IM1281Bå•ç›¸ç”µèƒ½è®¡é‡æ¨¡å—çš„æ•°æ®
+		analysis_IM1281B_data();//è§£æIM1281Bå•ç›¸ç”µèƒ½è®¡é‡æ¨¡å—å‘é€è‡³MCUçš„æ•°æ®
 
 		if(fire_status == 1)
 		{
-			currentDataPoint.valueFireMonitor = FireMonitor_VALUE0;//ÉÏ±¨ÓĞ»ğÔÖ
+			currentDataPoint.valueFireMonitor = FireMonitor_VALUE0;//ä¸ŠæŠ¥æœ‰ç«ç¾
 		}
 		else
 		{
-			currentDataPoint.valueFireMonitor = FireMonitor_VALUE1; //ÉÏ±¨ÎŞ»ğÔÖ
+			currentDataPoint.valueFireMonitor = FireMonitor_VALUE1; //ä¸ŠæŠ¥æ— ç«ç¾
 		}
 
 		if(Power_data > power_cmp_val)
 		{
-			currentDataPoint.valuePowerMonitor = PowerMonitor_VALUE1; //´æÔÚ´ó¹¦ÂÊÓÃµçÆ÷Éè±¸
+			currentDataPoint.valuePowerMonitor = PowerMonitor_VALUE1; //å­˜åœ¨å¤§åŠŸç‡ç”¨ç”µå™¨è®¾å¤‡
 		}
 
-		currentDataPoint.valueDisplayPowerMonitorVlaue = power_cmp_val;//ÉÏ±¨´ó¹¦ÂÊ¼à²âµÄÏÂÏŞÖµ¡¾±È½ÏÖµ¡¿
+		currentDataPoint.valueDisplayPowerMonitorVlaue = power_cmp_val;//ä¸ŠæŠ¥å¤§åŠŸç‡ç›‘æµ‹çš„ä¸‹é™å€¼ã€æ¯”è¾ƒå€¼ã€‘
 		
 		switch(led_status)
 		{
-			case 0: currentDataPoint.valueLED_status = LED_status_VALUE0; //ÉÏ±¨µÆ¹â¿ª×´Ì¬
+			case 0: currentDataPoint.valueLED_status = LED_status_VALUE0; //ä¸ŠæŠ¥ç¯å…‰å¼€çŠ¶æ€
 					break;
-			case 1: currentDataPoint.valueLED_status = LED_status_VALUE1; //ÉÏ±¨µÆ¹â¹Ø×´Ì¬
+			case 1: currentDataPoint.valueLED_status = LED_status_VALUE1; //ä¸ŠæŠ¥ç¯å…‰å…³çŠ¶æ€
 					break;
 			default: break;
 		}
@@ -358,7 +358,7 @@ void userHandle(void)
 		if(t == 10)
 		{
 			t = 0;
-			gizwitsGetNTP(); //ÇëÇóNTPÍøÂçÊ±¼ä
+			gizwitsGetNTP(); //è¯·æ±‚NTPç½‘ç»œæ—¶é—´
 		}
 		delay_ms(100);
 	}
@@ -428,8 +428,8 @@ uint32_t gizGetTimerCount(void)
 */
 void mcuRestart(void)
 {
-	__set_FAULTMASK(1);//¹Ø±ÕËùÓĞÖĞ¶Ï
-  NVIC_SystemReset();//¸´Î»
+	__set_FAULTMASK(1);//å…³é—­æ‰€æœ‰ä¸­æ–­
+  NVIC_SystemReset();//å¤ä½
 }
 /**@} */
 
@@ -451,23 +451,23 @@ void TIMER_IRQ_FUN(void)
 	static uint32_t countGetUp = 0;
 	static uint32_t countGoToBed = 0;
 	
-	if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)	//¼ì²éTIM3¸üĞÂÖĞ¶Ï·¢ÉúÓë·ñ
+	if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)	//æ£€æŸ¥TIM3æ›´æ–°ä¸­æ–­å‘ç”Ÿä¸å¦
 	{
-		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //Çå³ıTIMx¸üĞÂÖĞ¶Ï±êÖ¾ 
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //æ¸…é™¤TIMxæ›´æ–°ä¸­æ–­æ ‡å¿— 
 
-		if(countRead >= 999){ //1S²úÉúÒ»´Î¶ÁIM1281BµçÄÜ¼ÆÁ¿Ä£¿éµÄ±êÖ¾
+		if(countRead >= 999){ //1Säº§ç”Ÿä¸€æ¬¡è¯»IM1281Bç”µèƒ½è®¡é‡æ¨¡å—çš„æ ‡å¿—
 			read_enable = 1;
 			countRead = 0;
-			volumeAdd();  //Ôö¼ÓÑïÉùÆ÷ÒôÁ¿
+			volumeAdd();  //å¢åŠ æ‰¬å£°å™¨éŸ³é‡
 		}else{
 			countRead++;
 		}
 	
 		if(readMQ_DO == 0){
 			//user_Handel
-			if(countMQ>= 999){ //1ÃëÖÓÒ»´Î»ğÔÖ¾¯±¨
+			if(countMQ>= 999){ //1ç§’é’Ÿä¸€æ¬¡ç«ç¾è­¦æŠ¥
 				voice2Play();
-				fire_status = 1; //·¢Éú»ğÔÖ
+				fire_status = 1; //å‘ç”Ÿç«ç¾
 				countMQ = 0;
 			}else{
 				countMQ++;
@@ -475,9 +475,9 @@ void TIMER_IRQ_FUN(void)
 			
 		}
 		
-		if(EN_GetUpAlarm == 1){ //ÉèÖÃÁËÆğ´²ÄÖÖÓ
+		if(EN_GetUpAlarm == 1){ //è®¾ç½®äº†èµ·åºŠé—¹é’Ÿ
 			if(GetNtpVal.hour == GetUpHourSetVal && GetNtpVal.minute == GetUpMinuteSetVal){
-				if(countGetUp >= 999){ //1ÃëÖÓ
+				if(countGetUp >= 999){ //1ç§’é’Ÿ
 					GetUpFlag = 1;
 				}else{
 					countGetUp++;
@@ -485,9 +485,9 @@ void TIMER_IRQ_FUN(void)
 			}
 		}
 		
-		if(EN_GoToBedAlarm == 1){//ÉèÖÃÁËÏ¨µÆÄÖÖÓ
+		if(EN_GoToBedAlarm == 1){//è®¾ç½®äº†ç†„ç¯é—¹é’Ÿ
 			if(GetNtpVal.hour == GoToBedHourSetVal && GetNtpVal.minute == GoToBedMinuteSetVal){
-				if(countGoToBed >= 999){ //1ÃëÖÓ
+				if(countGoToBed >= 999){ //1ç§’é’Ÿ
 					GoToBedFlag = 1;
 				}else{
 					countGoToBed++;
@@ -496,21 +496,21 @@ void TIMER_IRQ_FUN(void)
 		}
 		
 		if(GetUpFlag == 1 ){
-			voice1Play(); //²¥·ÅÆğ´²ºÅ
+			voice1Play(); //æ’­æ”¾èµ·åºŠå·
 		}
 
 		if(GoToBedFlag == 1){
-			voice3Play();	//²¥·ÅÏ¨µÆºÅ
+			voice3Play();	//æ’­æ”¾ç†„ç¯å·
 			delay_ms(1000);
-			LED0 = 1;  //Ï¨µÆ
+			LED0 = 1;  //ç†„ç¯
 			led_status = 1;
 		}
 		
 		key = KEY_Scan(0);
 		if(key == KEY1_PRES)
-		{//KEY1 °´¼ü
+		{//KEY1 æŒ‰é”®
 			key_status = key;
-			gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link Ä£Ê½½ÓÈë
+			gizwitsSetMode(WIFI_AIRLINK_MODE);//Air-link æ¨¡å¼æ¥å…¥
 			LCD_Clear(WHITE);
 			LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 			LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
@@ -520,7 +520,7 @@ void TIMER_IRQ_FUN(void)
 			LCD_ShowString(50,170,200,16,16,"WIFI is ok in Airlink");
 		}
 		else if(key == KEY0_PRES)
-		{// KEY0 °´¼ü
+		{// KEY0 æŒ‰é”®
 			key_status = key;
 			//gizwitsSetMode(WIFI_SOFTAP_MODE);
 			LCD_Clear(RED);
@@ -532,9 +532,9 @@ void TIMER_IRQ_FUN(void)
 			LCD_ShowString(50,170,200,16,16,"WIFI is ok in SoftAP");
 		}
 		else if(key == WKUP_PRES)
-		{//KEY_UP °´¼ü
+		{//KEY_UP æŒ‰é”®
 			key_status = key;
-			gizwitsSetMode(WIFI_RESET_MODE);//WIFI ¸´Î»
+			gizwitsSetMode(WIFI_RESET_MODE);//WIFI å¤ä½
 			LCD_Clear(WHITE);
 			LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
 			LCD_ShowString(30,70,200,16,16,"WIFI mode select:");
@@ -552,7 +552,7 @@ void TIMER_IRQ_FUN(void)
 /**
 * @brief UART_IRQ_FUN
 
-* UART Serial interrupt function ï¼ŒFor Module communication
+* UART Serial interrupt function é”›å­or Module communication
 
 * Used to receive serial port protocol data between WiFi module
 
@@ -565,13 +565,13 @@ void UART_IRQ_FUN(void)
   //value = USART_ReceiveData(USART2);//STM32 test demo
   
 
-  if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)//½ÓÊÕµ½Êı¾İ
+  if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)//æ¥æ”¶åˆ°æ•°æ®
 	{	
 		USART_ClearITPendingBit(USART3,USART_IT_RXNE);
 		
 		RxWifiBuffer =USART_ReceiveData(USART3);
 		
-		gizPutData((uint8_t *)&RxWifiBuffer, 1);//Êı¾İĞ´Èëµ½»º³åÇø
+		gizPutData((uint8_t *)&RxWifiBuffer, 1);//æ•°æ®å†™å…¥åˆ°ç¼“å†²åŒº
 		
 		//GIZWITS_LOG("\r\n usart3_RX_IT is ok ! \r\n");
 	}
@@ -588,7 +588,7 @@ void UART_IRQ_FUN(void)
 * @param len       : Data length
 *
 * @return : Not 0,Serial send success;
-*           -1ï¼ŒInput Param Illegal
+*           -1é”›å­–nput Param Illegal
 */
 int32_t uartWrite(uint8_t *buf, uint32_t len)
 {
@@ -605,7 +605,7 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
         //Serial port to achieve the function, the buf[i] sent to the module
         
 		USART_SendData(USART3,buf[i]);
-	    while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //Ñ­»··¢ËÍ,Ö±µ½·¢ËÍÍê±Ï
+	    while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //å¾ªç¯å‘é€,ç›´åˆ°å‘é€å®Œæ¯•
 	        
 		if(i >=2 && buf[i] == 0xFF)
 		{
@@ -613,7 +613,7 @@ int32_t uartWrite(uint8_t *buf, uint32_t len)
 			//USART_SendData(UART, 0x55);//STM32 test demo
 					
 			USART_SendData(USART3,0x55);
-			while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //Ñ­»··¢ËÍ,Ö±µ½·¢ËÍÍê±Ï 
+			while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET); //å¾ªç¯å‘é€,ç›´åˆ°å‘é€å®Œæ¯• 
 		}
 			
     }

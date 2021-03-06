@@ -4,9 +4,9 @@
 #include "common.h"
 
    
-#define Read_ID 0x01     //IM1281B Ä£¿éÄ¬ÈÏIDÎª0x01
+#define Read_ID 0x01     //IM1281B æ¨¡å—é»˜è®¤IDä¸º0x01
 #define TxSize   8
-#define RxSize   9      //Ö»»ñÈ¡µçÁ÷ĞÅÏ¢   //»ñÈ¡Áù¸öÊı¾İ is 29  //²Î¿¼IM1281BÄ£¿éµÄ¼ÆÊıÊÖ²áµÄMODbus-´®¿ÚĞ­Òé
+#define RxSize   9      //åªè·å–ç”µæµä¿¡æ¯   //è·å–å…­ä¸ªæ•°æ® is 29  //å‚è€ƒIM1281Bæ¨¡å—çš„è®¡æ•°æ‰‹å†Œçš„MODbus-ä¸²å£åè®®
 
 union crc_data{
 		uint32_t word16;
@@ -60,11 +60,11 @@ uint32_t chk_crc(uint8_t *buf, uint8_t len)
 		crc = calc_crc(*buf, crc);
 		buf++;
 	}
-	hi = (uint8_t)(crc % 256); //µÍ8Î»
-	lo = (uint8_t)(crc / 256); //¸ß8Î»
+	hi = (uint8_t)(crc % 256); //ä½8ä½
+	lo = (uint8_t)(crc / 256); //é«˜8ä½
 	crc = (((uint32_t)(hi)) << 8 ) | lo;
 	
-	//GIZWITS_LOG("\r\n CRC : %#x \r\n", crc);  //´òÓ¡¾­¹ıµÍÎ»ÔÚÇ°¡¢¸ßÎ»ÔÚºó±ä»»µÄĞ£ÑéÂë£¬ÓÃÓÚĞ­ÒéÊı¾İÖ¡ÖĞµÄĞ£ÑéÂë
+	//GIZWITS_LOG("\r\n CRC : %#x \r\n", crc);  //æ‰“å°ç»è¿‡ä½ä½åœ¨å‰ã€é«˜ä½åœ¨åå˜æ¢çš„æ ¡éªŒç ï¼Œç”¨äºåè®®æ•°æ®å¸§ä¸­çš„æ ¡éªŒç 
 
 	return crc;
 }
@@ -74,11 +74,11 @@ void read_IM1281B_data(void)
 	uint8_t i;
 	union crc_data crc_now;
 
-	if(read_enable == 1){ //Ò»ÃëÖÓ³­¶ÁÒ»´ÎÄ£¿é
+	if(read_enable == 1){ //ä¸€ç§’é’ŸæŠ„è¯»ä¸€æ¬¡æ¨¡å—
 		
 		//ok
 
-		read_enable = 0; //Çå³ı1ÃëÖÓµ½¶Á±êÖ¾
+		read_enable = 0; //æ¸…é™¤1ç§’é’Ÿåˆ°è¯»æ ‡å¿—
 		Tx_Buffer[0] = Read_ID;
 		Tx_Buffer[1] = 0x03;
 		Tx_Buffer[2] = 0x00;
@@ -86,13 +86,13 @@ void read_IM1281B_data(void)
 		Tx_Buffer[4] = 0x00;
 		Tx_Buffer[5] = 0x01;     //6 data is 0x06
 		crc_now.word16 = chk_crc(Tx_Buffer,6);
-		Tx_Buffer[6] = crc_now.byte[1];  //CRCĞ£Ñé µÍ×Ö½ÚÂëÔÚÇ°
+		Tx_Buffer[6] = crc_now.byte[1];  //CRCæ ¡éªŒ ä½å­—èŠ‚ç åœ¨å‰
  		Tx_Buffer[7] = crc_now.byte[0];
 		
-		for(i = 0; i < TxSize; i++){//ÏòÄ£¿é·¢ËÍ8Bytes data
+		for(i = 0; i < TxSize; i++){//å‘æ¨¡å—å‘é€8Bytes data
 
 			USART_SendData(USART2,Tx_Buffer[i]);
-	    	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //Ñ­»··¢ËÍ,Ö±µ½·¢ËÍÍê±Ï
+	    	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //å¾ªç¯å‘é€,ç›´åˆ°å‘é€å®Œæ¯•
 		}
 			
 	}
@@ -104,16 +104,16 @@ void analysis_IM1281B_data(void)
 	//uint32_t eeData[6] = {0};
 	union crc_data crc_now;
 
-	if(receive_finished == 1){ //½ÓÊÕÍê³É
+	if(receive_finished == 1){ //æ¥æ”¶å®Œæˆ
 		
-		receive_finished = 0; //Çå³ı½ÓÊÕÍê³É±êÖ¾
+		receive_finished = 0; //æ¸…é™¤æ¥æ”¶å®Œæˆæ ‡å¿—
 
-		if(Rx_Buffer[0] == Read_ID){	//È·ÈÏIDÕıÈ·
+		if(Rx_Buffer[0] == Read_ID){	//ç¡®è®¤IDæ­£ç¡®
 
-			crc_now.word16 = chk_crc(Rx_Buffer,receive_number - 2); //receive_numberÊÇ½ÓÊÕÊı¾İ×Ü³¤¶È
+			crc_now.word16 = chk_crc(Rx_Buffer,receive_number - 2); //receive_numberæ˜¯æ¥æ”¶æ•°æ®æ€»é•¿åº¦
 
 			if((crc_now.byte[0] == Rx_Buffer[receive_number - 1]) && 
-				(crc_now.byte[1] == Rx_Buffer[receive_number - 2])){//È·¶¨CRCĞ£ÑéÕıÈ·
+				(crc_now.byte[1] == Rx_Buffer[receive_number - 2])){//ç¡®å®šCRCæ ¡éªŒæ­£ç¡®
 
 				LCD_Clear(BLUE);
 				LCD_ShowString(30,40,210,24,24,"gizwits IOT device"); 
@@ -122,11 +122,11 @@ void analysis_IM1281B_data(void)
 				LCD_ShowString(30,110,200,16,16,"KEY0: No mode");
 				LCD_ShowString(30,130,200,16,16,"KEY_UP: Rest mode");
 					
-				//µçÁ÷Êı¾İ	
+				//ç”µæµæ•°æ®	
 				rData = (((uint32_t)(Rx_Buffer[3])) << 24 )| (((uint32_t)(Rx_Buffer[4])) << 16 ) |
 						(((uint32_t)(Rx_Buffer[5])) << 8 ) | Rx_Buffer[6];
 				Current_data = rData * 0.0001; //A
-				Power_data = 	Current_data * 220; //W µ¥Ïà¹¦ÂÊ¹ÀËã
+				Power_data = 	Current_data * 220; //W å•ç›¸åŠŸç‡ä¼°ç®—
 				LCD_ShowString(30,180,200,16,16,"Current data[A]:");
 				LCD_ShowNum(30,200,rData,6,16);
 				LCD_ShowString(100,200,200,16,16,"* 0.0001A");
@@ -136,7 +136,7 @@ void analysis_IM1281B_data(void)
 				LCD_ShowString(100,240,200,16,16,"W");
 				GIZWITS_LOG("\r\n Power_data : %lf W\r\n",Power_data);
 				
-				//Áù×éÊı¾İ
+				//å…­ç»„æ•°æ®
 				#if 0
 				eeData[0] = (((uint32_t)(Rx_Buffer[3])) << 24 )| (((uint32_t)(Rx_Buffer[4])) << 16 ) |
 					(((uint32_t)(Rx_Buffer[5])) << 8 ) | Rx_Buffer[6];
@@ -168,7 +168,7 @@ void analysis_IM1281B_data(void)
 				
 				eeData[4] = (((uint32_t)(Rx_Buffer[19])) << 24 )| (((uint32_t)(Rx_Buffer[20])) << 16 ) |
 									(((uint32_t)(Rx_Buffer[21])) << 8 ) | Rx_Buffer[22];
-				Pf_data = eeData[4] * 0.001; //¹¦ÂÊÒòÊı P/Q
+				Pf_data = eeData[4] * 0.001; //åŠŸç‡å› æ•° P/Q
 				LCD_ShowNum(30,260,eeData[4],6,16);
 				LCD_ShowString(100,260,200,16,16,"* 0.001P/Q");
 				GIZWITS_LOG("\r\n Pf_data : %lf \r\n",Pf_data);
@@ -187,12 +187,12 @@ void analysis_IM1281B_data(void)
 
 
 
-//´®¿Ú2ÖĞ¶Ï·şÎñº¯Êı
+//ä¸²å£2ä¸­æ–­æœåŠ¡å‡½æ•°
 void USART2_IRQHandler(void)
 {
 	static uint8_t count = 0;
 	
-	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){	//½ÓÊÕµ½Êı¾İ
+	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){	//æ¥æ”¶åˆ°æ•°æ®
 
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
 		
@@ -204,7 +204,7 @@ void USART2_IRQHandler(void)
 			Rx_Buffer[count] = USART_ReceiveData(USART2);
 			receive_number = 0;
 			if(count == (RxSize - 1) ){
-				receive_finished = 1; //½ÓÊÕÍê³É,²úÉú±êÖ¾
+				receive_finished = 1; //æ¥æ”¶å®Œæˆ,äº§ç”Ÿæ ‡å¿—
 				receive_number = RxSize;
 			}
 			count++;
@@ -214,50 +214,50 @@ void USART2_IRQHandler(void)
 
 }   
 
-//³õÊ¼»¯IO ´®¿Ú2
-//pclk1:PCLK1Ê±ÖÓÆµÂÊ(Mhz)
-//bound:²¨ÌØÂÊ	     
-void usart2_init(u32 bound)   //ÓëIM1281Bµ¥ÏàµçÄÜ¼ÆÁ¿´«¸ĞÆ÷Í¨Ñ¶£¬Ä¬ÈÏÎª4800bps
+//åˆå§‹åŒ–IO ä¸²å£2
+//pclk1:PCLK1æ—¶é’Ÿé¢‘ç‡(Mhz)
+//bound:æ³¢ç‰¹ç‡	     
+void usart2_init(u32 bound)   //ä¸IM1281Bå•ç›¸ç”µèƒ½è®¡é‡ä¼ æ„Ÿå™¨é€šè®¯ï¼Œé»˜è®¤ä¸º4800bps
 {  
 
 	NVIC_InitTypeDef NVIC_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	                       //GPIOAÊ±ÖÓ
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);                          //´®¿Ú2Ê±ÖÓÊ¹ÄÜ
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	                       //GPIOAæ—¶é’Ÿ
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);                          //ä¸²å£2æ—¶é’Ÿä½¿èƒ½
 
- 	USART_DeInit(USART2);  //¸´Î»´®¿Ú2
+ 	USART_DeInit(USART2);  //å¤ä½ä¸²å£2
 	//USART2_TX   PA2
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;                                     //PA2
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	                               //¸´ÓÃÍÆÍìÊä³ö
-    GPIO_Init(GPIOA, &GPIO_InitStructure);                                         //³õÊ¼»¯PA2
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	                               //å¤ç”¨æ¨æŒ½è¾“å‡º
+    GPIO_Init(GPIOA, &GPIO_InitStructure);                                         //åˆå§‹åŒ–PA2
    
     //USART2_RX	  PA3
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;                          //¸¡¿ÕÊäÈë
-    GPIO_Init(GPIOA, &GPIO_InitStructure);                                         //³õÊ¼»¯PA3
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;                          //æµ®ç©ºè¾“å…¥
+    GPIO_Init(GPIOA, &GPIO_InitStructure);                                         //åˆå§‹åŒ–PA3
 	
-	USART_InitStructure.USART_BaudRate = bound;                                    //²¨ÌØÂÊÒ»°ãÉèÖÃÎª4800;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;                    //×Ö³¤Îª8Î»Êı¾İ¸ñÊ½
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;                         //Ò»¸öÍ£Ö¹Î»
-	USART_InitStructure.USART_Parity = USART_Parity_No;                            //ÎŞÆæÅ¼Ğ£ÑéÎ»
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//ÎŞÓ²¼şÊı¾İÁ÷¿ØÖÆ
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	               //ÊÕ·¢Ä£Ê½
+	USART_InitStructure.USART_BaudRate = bound;                                    //æ³¢ç‰¹ç‡ä¸€èˆ¬è®¾ç½®ä¸º4800;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;                    //å­—é•¿ä¸º8ä½æ•°æ®æ ¼å¼
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;                         //ä¸€ä¸ªåœæ­¢ä½
+	USART_InitStructure.USART_Parity = USART_Parity_No;                            //æ— å¥‡å¶æ ¡éªŒä½
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//æ— ç¡¬ä»¶æ•°æ®æµæ§åˆ¶
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	               //æ”¶å‘æ¨¡å¼
   
-	USART_Init(USART2, &USART_InitStructure);       //³õÊ¼»¯´®¿Ú2
+	USART_Init(USART2, &USART_InitStructure);       //åˆå§‹åŒ–ä¸²å£2
   
-	USART_Cmd(USART2, ENABLE);                      //Ê¹ÄÜ´®¿Ú 
+	USART_Cmd(USART2, ENABLE);                      //ä½¿èƒ½ä¸²å£ 
 	
-	//Ê¹ÄÜ½ÓÊÕÖĞ¶Ï
-    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);  //¿ªÆôÖĞ¶Ï   
+	//ä½¿èƒ½æ¥æ”¶ä¸­æ–­
+    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);  //å¼€å¯ä¸­æ–­   
 	
-	//ÉèÖÃÖĞ¶ÏÓÅÏÈ¼¶
+	//è®¾ç½®ä¸­æ–­ä¼˜å…ˆçº§
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1 ;//ÇÀÕ¼ÓÅÏÈ¼¶1
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;		//×ÓÓÅÏÈ¼¶3
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨µÀÊ¹ÄÜ
-	NVIC_Init(&NVIC_InitStructure);	//¸ù¾İÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯VIC¼Ä´æÆ÷
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1 ;//æŠ¢å ä¼˜å…ˆçº§1
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;		//å­ä¼˜å…ˆçº§3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQé€šé“ä½¿èƒ½
+	NVIC_Init(&NVIC_InitStructure);	//æ ¹æ®æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–VICå¯„å­˜å™¨
 }
 
