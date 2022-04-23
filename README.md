@@ -1,50 +1,29 @@
 # SmartDormitorySolutionsForIOT_item
 
-#### 介绍
-基于物联网云平台的智慧宿舍管理系统
---2019专业综合课程设计集体项目
+# 1. 介绍
 
-#### 软件架构
-软件架构说明:
+- 基于物联网云平台的智慧宿舍管理系统[2019专业综合课程设计集体项目]
 
-###### |APP客户端|
-###### ↑↓  ------------------- WiFi/Mobile_Network
-###### |机智云服务器平台|
-###### ↑↓  ------------------- TCP/IP
-###### |WLAN/无线路由器|
-###### ↑↓  ------------------- WIFI5 2.4GHZ
-###### |ESP8266 WIFI 模组|
-###### ↑↓  ------------------- UART
-###### |物理终端设备|  -------  MCU最小系统 + 各类传感器、通讯、执行器模块
+# 2. 软件架构
 
+![](./pic/201912软件设计流程图.svg)
 
-#### 安装教程
+# 3. 项目使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+- phsical_device_code/ 
 
-#### 使用说明
+>  放置了物理终端设备的应用与驱动代码
 
-1.  phsical_device_code/ 
-###### 放置了物理终端设备的应用与驱动代码
-2.  APP-AndroidStudio/
-######  放置了安卓APP代码，此代码的框架来源于机智云官方开发平台
-3.  xxxx
+- APP-AndroidStudio/
 
-#### 参与贡献
+>  放置了安卓APP代码，此代码的框架来源于机智云官方开发平台
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+- doc/
+> 相关开发文档资料
 
+# 4. 参与贡献
 
-#### 码云特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+- Fork 本仓库
+- 新建 feature_xxx 分支
+- 提交代码
+- 新建 Pull Request
